@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sonderdev.ca</title>
+    <meta name="description" content="Sonder Development is a boutique fintech software studio building SaaS, web, and mobile products for financial institutions.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #07050d;
+            --bg-soft: #0f0b1a;
+            --ink: #f2f1f7;
+            --muted: #b4b0c4;
+            --line: #2d2441;
+            --purple: #9b72cf;
+            --purple-strong: #b588ea;
+            --purple-soft: rgba(155, 114, 207, 0.2);
+            --font-heading: "Newsreader", "Times New Roman", serif;
+            --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--ink);
+            background: var(--bg);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        .webgl-layer {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        #webgl-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .vignette {
+            position: fixed;
+            inset: 0;
+            z-index: 1;
+            pointer-events: none;
+            background:
+                radial-gradient(ellipse at center, rgba(7, 5, 13, 0) 45%, rgba(7, 5, 13, 0.88) 100%),
+                linear-gradient(to bottom, rgba(7, 5, 13, 0.3) 0%, rgba(7, 5, 13, 0.65) 100%);
+        }
+
+        .site {
+            position: relative;
+            z-index: 2;
+        }
+
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 80;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 48px;
+            transition: background 400ms ease, backdrop-filter 400ms ease;
+        }
+
+        .nav.scrolled {
+            background: rgba(7, 5, 13, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(181, 136, 234, 0.16);
+        }
+
+        .nav-logo {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .nav-logo img {
+            width: 132px;
+            height: 132px;
+            object-fit: contain;
+            filter: saturate(1.18) contrast(1.1);
+            mix-blend-mode: screen;
+        }
+
+        .nav-link {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            text-decoration: none;
+            color: var(--muted);
+            transition: color 280ms ease;
+            position: relative;
+            padding-bottom: 5px;
+        }
+
+        .nav-link::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 1px;
+            background: var(--purple-strong);
+            transition: width 380ms ease;
+        }
+
+        .nav-link:hover {
+            color: var(--ink);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .hero {
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            text-align: center;
+            padding: 120px 24px 80px;
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: clamp(40px, 7vw, 78px);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 24px;
+            max-width: 900px;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: clamp(15px, 2vw, 20px);
+            margin: 0 auto 44px;
+            max-width: 620px;
+            font-weight: 300;
+        }
+
+        .btn {
+            display: inline-block;
+            border: 1px solid var(--purple-strong);
+            color: var(--purple-strong);
+            text-decoration: none;
+            padding: 14px 34px;
+            font-size: 12px;
+            letter-spacing: 0.11em;
+            text-transform: uppercase;
+            transition: background 350ms ease, color 350ms ease, border-color 350ms ease;
+        }
+
+        .btn:hover {
+            background: var(--purple-strong);
+            color: var(--bg);
+            border-color: var(--purple-strong);
+        }
+
+        .stats {
+            border-top: 1px solid var(--line);
+            border-bottom: 1px solid var(--line);
+            background: rgba(15, 11, 26, 0.62);
+            backdrop-filter: blur(4px);
+        }
+
+        .stats-grid {
+            max-width: 1160px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .stat {
+            text-align: center;
+            padding: 56px 20px;
+            border-right: 1px solid var(--line);
+        }
+
+        .stat:last-child {
+            border-right: none;
+        }
+
+        .stat h3 {
+            font-family: var(--font-heading);
+            color: var(--purple-strong);
+            font-size: clamp(32px, 4vw, 48px);
+            font-weight: 500;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .stat p {
+            color: #8f87a8;
+            font-size: 12px;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
+        }
+
+        .about {
+            max-width: 640px;
+            margin: 0 auto;
+            text-align: center;
+            padding: 140px 24px;
+        }
+
+        .logos {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 110px 24px 100px;
+        }
+
+        .logos-headline {
+            text-align: center;
+            margin-bottom: 22px;
+            color: var(--muted);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            font-size: 11px;
+        }
+
+        .logos-note {
+            text-align: center;
+            color: #968eaf;
+            margin-bottom: 50px;
+            font-size: 14px;
+            font-weight: 300;
+        }
+
+        .carousel-scene {
+            position: relative;
+            height: 300px;
+            perspective: 1300px;
+            cursor: grab;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .carousel-scene.is-dragging {
+            cursor: grabbing;
+        }
+
+        .carousel-track {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 220px;
+            height: 80px;
+            transform-style: preserve-3d;
+            transform: translate3d(-50%, -50%, 0);
+        }
+
+        .logo-pill {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid rgba(181, 136, 234, 0.3);
+            background: rgba(20, 15, 33, 0.82);
+            color: #d3c7ef;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            font-size: 11px;
+            font-weight: 500;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .eyebrow {
+            font-size: 11px;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--purple);
+            margin-bottom: 28px;
+            font-weight: 500;
+        }
+
+        .about p {
+            font-family: var(--font-heading);
+            font-size: clamp(22px, 3vw, 30px);
+            line-height: 1.65;
+            color: #e9e6f3;
+        }
+
+        .services {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 26px 24px 140px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .card {
+            border: 1px solid var(--line);
+            background: rgba(15, 11, 26, 0.56);
+            padding: 36px 30px;
+            position: relative;
+            transition: border-color 340ms ease, transform 340ms ease;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0 auto auto 0;
+            width: 100%;
+            height: 2px;
+            background: var(--purple-strong);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 420ms ease;
+        }
+
+        .card:hover {
+            border-color: #5f4d85;
+            transform: translateY(-3px);
+        }
+
+        .card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .icon {
+            width: 36px;
+            height: 36px;
+            color: var(--purple-strong);
+            margin-bottom: 22px;
+        }
+
+        .icon svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .card h3 {
+            font-family: var(--font-heading);
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .card p {
+            color: #a097b8;
+            font-size: 14px;
+            font-weight: 300;
+            line-height: 1.7;
+        }
+
+        .closing {
+            border-top: 1px solid var(--line);
+            padding: 120px 24px;
+            text-align: center;
+        }
+
+        .closing blockquote {
+            font-family: var(--font-heading);
+            font-style: italic;
+            font-size: clamp(28px, 4vw, 44px);
+            line-height: 1.35;
+            max-width: 780px;
+            margin: 0 auto 46px;
+            color: #eeebf8;
+        }
+
+        .footer {
+            border-top: 1px solid var(--line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 18px;
+            padding: 28px 48px;
+            background: rgba(7, 5, 13, 0.55);
+        }
+
+        .footer img {
+            width: 64px;
+            height: 64px;
+            object-fit: contain;
+            filter: saturate(1.18) contrast(1.1);
+            mix-blend-mode: screen;
+            opacity: 0.95;
+        }
+
+        .footer p,
+        .footer a {
+            font-size: 12px;
+            color: #9b95b1;
+            text-decoration: none;
+            letter-spacing: 0.05em;
+        }
+
+        .footer a:hover {
+            color: var(--purple-strong);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 900ms ease, transform 900ms ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .delay-1 {
+            transition-delay: 120ms;
+        }
+
+        .delay-2 {
+            transition-delay: 220ms;
+        }
+
+        @media (max-width: 900px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat {
+                border-right: none;
+                border-bottom: 1px solid var(--line);
+            }
+
+            .stat:last-child {
+                border-bottom: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                padding: 18px 20px;
+            }
+
+            .nav-logo img {
+                width: 104px;
+                height: 104px;
+            }
+
+            .carousel-scene {
+                height: 250px;
+            }
+
+            .logo-pill {
+                font-size: 10px;
+                letter-spacing: 0.12em;
+            }
+
+            .footer {
+                padding: 24px 20px;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="webgl-layer">
+        <canvas id="webgl-canvas" aria-hidden="true"></canvas>
+    </div>
+    <div class="vignette"></div>
+    <div class="site">
+        <nav class="nav" id="nav">
+            <a class="nav-logo" href="#">
+                <img class="logo-mark" src="logo-clean.png" alt="Sonder Development logo">
+            </a>
+            <a class="nav-link" href="#contact">Contact</a>
+        </nav>
+
+        <header class="hero">
+            <div>
+                <h1 class="reveal">We build the infrastructure of finance.</h1>
+                <p class="reveal delay-1">Software for the platforms that move markets.</p>
+                <a class="btn reveal delay-2" href="#contact">Start a Project &rarr;</a>
+            </div>
+        </header>
+
+        <section class="stats">
+            <div class="stats-grid">
+                <article class="stat reveal">
+                    <h3>100,000+</h3>
+                    <p>Investors &amp; Advisors Served</p>
+                </article>
+                <article class="stat reveal delay-1">
+                    <h3>10+</h3>
+                    <p>Years in Financial Technology</p>
+                </article>
+                <article class="stat reveal delay-2">
+                    <h3>3</h3>
+                    <p>Core Disciplines</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="logos">
+            <p class="logos-headline reveal">Trusted Across Financial Product Teams</p>
+            <p class="logos-note reveal delay-1">Drag to rotate</p>
+            <div class="carousel-scene reveal delay-2" id="carousel-scene">
+                <div class="carousel-track" id="carousel-track">
+                    <div class="logo-pill">CASHiQ Inc.</div>
+                    <div class="logo-pill">PRIVO Lending</div>
+                    <div class="logo-pill">GICSimple</div>
+                    <!--<div class="logo-pill">Summit Ledger</div>
+                    <div class="logo-pill">Helix Advisors</div>
+                    <div class="logo-pill">Aperture Funds</div>
+                    <div class="logo-pill">Bridgepoint Markets</div>
+                    <div class="logo-pill">Vertex Treasury</div>
+                    <div class="logo-pill">Monarch Analytics</div>-->
+                </div>
+            </div>
+        </section>
+
+        <section class="about">
+            <p class="eyebrow reveal">About</p>
+            <p class="reveal delay-1">Sonder Development is a boutique software studio. We design and build SaaS, web, and mobile products for financial institutions and the firms that serve them.</p>
+        </section>
+
+        <section class="services">
+            <p class="eyebrow reveal">Services</p>
+            <div class="services-grid">
+                <article class="card reveal">
+                    <div class="icon">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="4" y="8" width="32" height="24" rx="2"></rect>
+                            <line x1="4" y1="16" x2="36" y2="16"></line>
+                            <line x1="14" y1="16" x2="14" y2="32"></line>
+                        </svg>
+                    </div>
+                    <h3>SaaS Platforms</h3>
+                    <p>Scalable, secure product ecosystems engineered for institutional-grade use.</p>
+                </article>
+                <article class="card reveal delay-1">
+                    <div class="icon">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="6" y="6" width="28" height="28" rx="2"></rect>
+                            <line x1="12" y1="14" x2="28" y2="14"></line>
+                            <line x1="12" y1="20" x2="22" y2="20"></line>
+                            <line x1="12" y1="26" x2="18" y2="26"></line>
+                        </svg>
+                    </div>
+                    <h3>Web Applications</h3>
+                    <p>Client portals and advisor experiences where precision and usability must coexist.</p>
+                </article>
+                <article class="card reveal delay-2">
+                    <div class="icon">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="12" y="4" width="16" height="32" rx="3"></rect>
+                            <line x1="12" y1="10" x2="28" y2="10"></line>
+                            <line x1="18" y1="31" x2="22" y2="31"></line>
+                        </svg>
+                    </div>
+                    <h3>Mobile Products</h3>
+                    <p>Mobile-first fintech products designed for speed, trust, and daily engagement.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="closing" id="contact">
+            <blockquote class="reveal">"Digital architects building the future of finance."</blockquote>
+            <a class="btn reveal delay-1" href="mailto:hello@sonderdev.com">Get in Touch</a>
+        </section>
+
+        <footer class="footer">
+            <a href="#"><img class="logo-mark" src="logo-clean.png" alt="Sonder Development logo"></a>
+            <p>&copy; 2026 Sonder Development</p>
+            <a href="mailto:hello@sonderdev.com">hello@sonderdev.com</a>
+        </footer>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        (function () {
+            var nav = document.getElementById("nav");
+            window.addEventListener("scroll", function () {
+                nav.classList.toggle("scrolled", window.scrollY > 30);
+            });
+
+            var revealItems = document.querySelectorAll(".reveal");
+            var observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.14,
+                rootMargin: "0px 0px -40px 0px"
+            });
+
+            revealItems.forEach(function (item) {
+                observer.observe(item);
+            });
+
+            var sceneEl = document.getElementById("carousel-scene");
+            var trackEl = document.getElementById("carousel-track");
+            var logoItems = Array.prototype.slice.call(trackEl.children);
+            var carouselAngle = 0;
+            var velocity = 0;
+            var radius = 320;
+            var isDown = false;
+            var startX = 0;
+
+            function layoutCarousel() {
+                var total = logoItems.length;
+                radius = window.innerWidth < 768 ? 220 : 320;
+                logoItems.forEach(function (item, index) {
+                    var theta = (360 / total) * index;
+                    item.style.transform = "rotateY(" + theta + "deg) translateZ(" + radius + "px)";
+                });
+            }
+
+            layoutCarousel();
+
+            sceneEl.addEventListener("mousedown", function (event) {
+                isDown = true;
+                startX = event.clientX;
+                sceneEl.classList.add("is-dragging");
+            });
+
+            window.addEventListener("mouseup", function () {
+                isDown = false;
+                sceneEl.classList.remove("is-dragging");
+            });
+
+            window.addEventListener("mousemove", function (event) {
+                if (!isDown) {
+                    return;
+                }
+                var delta = event.clientX - startX;
+                startX = event.clientX;
+                velocity = delta * 0.04;
+            });
+
+            sceneEl.addEventListener("touchstart", function (event) {
+                isDown = true;
+                startX = event.touches[0].clientX;
+            }, { passive: true });
+
+            window.addEventListener("touchend", function () {
+                isDown = false;
+            });
+
+            window.addEventListener("touchmove", function (event) {
+                if (!isDown) {
+                    return;
+                }
+                var delta = event.touches[0].clientX - startX;
+                startX = event.touches[0].clientX;
+                velocity = delta * 0.035;
+            }, { passive: true });
+
+            var canvas = document.getElementById("webgl-canvas");
+            var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
+            renderer.setSize(window.innerWidth, window.innerHeight);
+
+            var scene = new THREE.Scene();
+            var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            var uniforms = {
+                uTime: { value: 0 },
+                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
+                uMouse: { value: new THREE.Vector2(0.5, 0.5) }
+            };
+
+            var material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                transparent: true,
+                vertexShader: [
+                    "void main() {",
+                    "  gl_Position = vec4(position, 1.0);",
+                    "}"
+                ].join("\n"),
+                fragmentShader: [
+                    "precision highp float;",
+                    "uniform float uTime;",
+                    "uniform vec2 uResolution;",
+                    "uniform vec2 uMouse;",
+                    "",
+                    "float hash(vec2 p) {",
+                    "  p = fract(p * vec2(123.34, 456.21));",
+                    "  p += dot(p, p + 45.32);",
+                    "  return fract(p.x * p.y);",
+                    "}",
+                    "",
+                    "float noise(vec2 p) {",
+                    "  vec2 i = floor(p);",
+                    "  vec2 f = fract(p);",
+                    "  float a = hash(i);",
+                    "  float b = hash(i + vec2(1.0, 0.0));",
+                    "  float c = hash(i + vec2(0.0, 1.0));",
+                    "  float d = hash(i + vec2(1.0, 1.0));",
+                    "  vec2 u = f * f * (3.0 - 2.0 * f);",
+                    "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;",
+                    "}",
+                    "",
+                    "float fbm(vec2 p) {",
+                    "  float v = 0.0;",
+                    "  float a = 0.5;",
+                    "  for (int i = 0; i < 5; i++) {",
+                    "    v += a * noise(p);",
+                    "    p *= 2.03;",
+                    "    a *= 0.5;",
+                    "  }",
+                    "  return v;",
+                    "}",
+                    "",
+                    "void main() {",
+                    "  vec2 uv = gl_FragCoord.xy / uResolution.xy;",
+                    "  vec2 p = uv;",
+                    "  p.x *= uResolution.x / uResolution.y;",
+                    "",
+                    "  float t = uTime * 0.22;",
+                    "  float warpA = fbm(vec2(p.x * 1.05 + t * 0.12, p.y * 1.35 - t * 0.05));",
+                    "  float warpB = fbm(vec2(p.x * 1.30 - t * 0.08, p.y * 1.10 + t * 0.10));",
+                    "",
+                    "  float pathA = 0.56 + sin((p.x * 1.20) + t * 0.80) * 0.10 + (warpA - 0.5) * 0.10;",
+                    "  float pathB = 0.44 + sin((p.x * 1.05) - t * 0.70 + 1.8) * 0.09 + (warpB - 0.5) * 0.08;",
+                    "  float dA = abs(uv.y - pathA);",
+                    "  float dB = abs(uv.y - pathB);",
+                    "  float beamA = smoothstep(0.16, 0.0, dA);",
+                    "  float beamB = smoothstep(0.15, 0.0, dB);",
+                    "",
+                    "  float coreA = smoothstep(0.035, 0.0, dA);",
+                    "  float coreB = smoothstep(0.032, 0.0, dB);",
+                    "  float glowA = smoothstep(0.30, 0.0, dA);",
+                    "  float glowB = smoothstep(0.30, 0.0, dB);",
+                    "",
+                    "  float ribbonFlow = sin((p.x * 10.0) + t * 0.9 + warpA * 6.0) * 0.5 + 0.5;",
+                    "",
+                    "  vec3 bg = vec3(0.027, 0.020, 0.060);",
+                    "  vec3 colA = vec3(0.250, 0.145, 0.475);",
+                    "  vec3 colB = vec3(0.470, 0.290, 0.760);",
+                    "  vec3 colC = vec3(0.760, 0.560, 0.970);",
+                    "",
+                    "  float topoField = fbm(vec2(p.x * 2.25 + t * 0.07, p.y * 2.10 - t * 0.05)) +",
+                    "                    fbm(vec2(p.x * 1.70 - t * 0.04, p.y * 1.85 + t * 0.06)) * 0.35;",
+                    "  float contourWave = abs(sin((topoField + p.x * 0.04 + p.y * 0.08) * 145.0));",
+                    "  float contour = smoothstep(0.955, 0.995, contourWave);",
+                    "",
+                    "  float mouseInfluence = 1.0 - smoothstep(0.0, 0.9, distance(uv, uMouse));",
+                    "",
+                    "  vec3 beamColorA = mix(colA, colC, coreA) * (0.78 + ribbonFlow * 0.22);",
+                    "  vec3 beamColorB = mix(colA, colB, coreB);",
+                    "  vec3 color = bg;",
+                    "  color += beamColorA * beamA * 0.52;",
+                    "  color += beamColorB * beamB * 0.45;",
+                    "  color += colC * (glowA * 0.12 + glowB * 0.10);",
+                    "  color += vec3(0.42, 0.26, 0.72) * contour * 0.20;",
+                    "  color += mouseInfluence * 0.02;",
+                    "",
+                    "  float vignette = smoothstep(1.08, 0.28, distance(uv, vec2(0.5)));",
+                    "  color *= vignette;",
+                    "",
+                    "  gl_FragColor = vec4(color, 0.97);",
+                    "}"
+                ].join("\n")
+            });
+
+            var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+            scene.add(quad);
+
+            window.addEventListener("mousemove", function (event) {
+                uniforms.uMouse.value.x = event.clientX / window.innerWidth;
+                uniforms.uMouse.value.y = 1.0 - event.clientY / window.innerHeight;
+            });
+
+            window.addEventListener("resize", function () {
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+                layoutCarousel();
+            });
+
+            // Remove dark background and tightly crop logo bounds.
+            function cleanupLogoBackground(img) {
+                if (img.dataset.cleaned === "true") {
+                    return;
+                }
+                var source = img.getAttribute("src");
+                var offscreen = new Image();
+                offscreen.onload = function () {
+                    var c = document.createElement("canvas");
+                    c.width = offscreen.naturalWidth;
+                    c.height = offscreen.naturalHeight;
+                    var ctx = c.getContext("2d");
+                    ctx.drawImage(offscreen, 0, 0);
+                    var data = ctx.getImageData(0, 0, c.width, c.height);
+                    var px = data.data;
+                    var minX = c.width;
+                    var minY = c.height;
+                    var maxX = -1;
+                    var maxY = -1;
+
+                    function isBackground(r, g, b) {
+                        var maxC = Math.max(r, g, b);
+                        var minC = Math.min(r, g, b);
+                        var sat = maxC === 0 ? 0 : (maxC - minC) / maxC;
+                        var val = maxC / 255;
+                        return (val < 0.20) || (sat < 0.16 && val < 0.36);
+                    }
+
+                    for (var i = 0; i < px.length; i += 4) {
+                        var r = px[i];
+                        var g = px[i + 1];
+                        var b = px[i + 2];
+                        var pixelIndex = i / 4;
+                        var x = pixelIndex % c.width;
+                        var y = (pixelIndex - x) / c.width;
+                        if (isBackground(r, g, b)) {
+                            px[i + 3] = 0;
+                        } else if (px[i + 3] > 12) {
+                            if (x < minX) { minX = x; }
+                            if (y < minY) { minY = y; }
+                            if (x > maxX) { maxX = x; }
+                            if (y > maxY) { maxY = y; }
+                        }
+                    }
+                    ctx.putImageData(data, 0, 0);
+
+                    if (maxX > minX && maxY > minY) {
+                        var pad = 4;
+                        var cropW = (maxX - minX + 1);
+                        var cropH = (maxY - minY + 1);
+                        var out = document.createElement("canvas");
+                        out.width = cropW + pad * 2;
+                        out.height = cropH + pad * 2;
+                        var outCtx = out.getContext("2d");
+                        outCtx.drawImage(
+                            c,
+                            minX,
+                            minY,
+                            cropW,
+                            cropH,
+                            pad,
+                            pad,
+                            cropW,
+                            cropH
+                        );
+                        img.src = out.toDataURL("image/png");
+                    } else {
+                        img.src = c.toDataURL("image/png");
+                    }
+                    img.dataset.cleaned = "true";
+                };
+                offscreen.src = source;
+            }
+
+            var logoMarks = document.querySelectorAll(".logo-mark");
+            logoMarks.forEach(function (logo) {
+                cleanupLogoBackground(logo);
+            });
+
+            var clock = new THREE.Clock();
+            function tick() {
+                uniforms.uTime.value = clock.getElapsedTime();
+                velocity *= 0.94;
+                carouselAngle += 0.12 + velocity;
+                trackEl.style.transform = "translate3d(-50%, -50%, 0) rotateY(" + carouselAngle + "deg)";
+                renderer.render(scene, camera);
+                requestAnimationFrame(tick);
+            }
+            tick();
+        })();
+    </script>
+</body>
+</html>
