@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sonder Development | Software for Financial Products</title>
     <meta name="description" content="Sonder Development builds fintech products, financial platforms, and infrastructure for ambitious founders and modern financial companies.">
+    <link rel="icon" href="Sonder-DevelopCLR.png" type="image/png">
+    <meta property="og:title" content="Sonder Development | Software for Financial Products">
+    <meta property="og:description" content="Sonder Development builds fintech products, financial platforms, and infrastructure for ambitious founders and modern financial companies.">
+    <meta property="og:image" content="Sonder-DevelopCLR.png">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Sonder Development | Software for Financial Products">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
@@ -692,7 +699,7 @@
             border-bottom: 1px solid rgba(181, 136, 234, 0.16);
             background: rgba(255, 255, 255, 0.02);
             color: var(--ink);
-            padding: 15px 0;
+            padding: 15px 14px;
             font: inherit;
             outline: none;
             transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
@@ -713,8 +720,16 @@
         .form-textarea {
             min-height: 132px;
             resize: vertical;
-            padding-left: 0;
-            padding-right: 0;
+        }
+
+        .budget-fieldset {
+            padding: 16px 18px 18px;
+            border: 1px solid rgba(181, 136, 234, 0.2);
+            margin-top: 4px;
+        }
+
+        .budget-fieldset legend {
+            margin-bottom: 12px;
         }
 
         .budget-options {
@@ -915,6 +930,10 @@
             transform: translateY(0);
         }
 
+        .temp-hidden {
+            display: none !important;
+        }
+
         .delay-1 {
             transition-delay: 120ms;
         }
@@ -1107,7 +1126,8 @@
             </div>
         </section>
 
-        <section class="logos section-open">
+        <!-- TEMP HIDDEN: remove temp-hidden class to show carousel -->
+        <section class="logos section-open temp-hidden">
             <p class="logos-headline reveal">Trusted by Financial Product Teams</p>
             <p class="logos-note reveal delay-1">Drag to rotate</p>
             <div class="carousel-scene reveal delay-2" id="carousel-scene">
