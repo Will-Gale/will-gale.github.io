@@ -89,14 +89,14 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 24px 48px;
+            padding: 14px 48px;
             transition: background 400ms ease, backdrop-filter 400ms ease;
         }
 
         .nav.scrolled {
-            background: rgba(7, 5, 13, 0.6);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(7, 5, 13, 0.96);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(181, 136, 234, 0.16);
         }
 
@@ -108,8 +108,8 @@
         }
 
         .nav-logo img {
-            width: 80px;
-            height: 80px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
             display: block;
         }
@@ -279,6 +279,58 @@
             font-size: 12px;
             letter-spacing: 0.09em;
             text-transform: uppercase;
+        }
+
+        .logo-bar {
+            position: relative;
+            padding: 48px 24px 56px;
+            background:
+                linear-gradient(180deg, rgba(7, 5, 13, 0.55) 0%, rgba(5, 4, 10, 0.65) 100%),
+                url("assets/gptimage.png") center / cover no-repeat;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .logo-bar-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 1160px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 48px 64px;
+        }
+
+        .logo-placeholder {
+            height: 40px;
+            min-width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 11px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            border: 1px dashed rgba(255, 255, 255, 0.35);
+            border-radius: 4px;
+        }
+
+        .logo-placeholder img {
+            height: 32px;
+            width: auto;
+            max-width: 120px;
+            object-fit: contain;
+            filter: brightness(0) invert(1);
+            opacity: 1;
+        }
+
+        .logo-placeholder:has(img) {
+            border: none;
+            color: transparent;
         }
 
         .about.section-panel::before {
@@ -1014,7 +1066,7 @@
             }
 
             .nav {
-                padding: 18px 20px;
+                padding: 12px 20px;
             }
 
             .contact-section {
@@ -1068,8 +1120,18 @@
             }
 
             .nav-logo img {
-                width: 44px;
-                height: 44px;
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-bar-inner {
+                gap: 32px 40px;
+            }
+
+            .logo-placeholder {
+                height: 36px;
+                min-width: 80px;
+                font-size: 10px;
             }
 
             .carousel-scene {
@@ -1112,17 +1174,26 @@
         <section class="stats section-panel">
             <div class="stats-grid">
                 <article class="stat reveal">
-                    <h3>100,000+</h3>
-                    <p>Investors &amp; Advisors Served</p>
+                    <h3>9</h3>
+                    <p>Products Launched · 4 Companies Built</p>
                 </article>
                 <article class="stat reveal delay-1">
-                    <h3>10+</h3>
+                    <h3>7+</h3>
                     <p>Years in Financial Technology</p>
                 </article>
                 <article class="stat reveal delay-2">
-                    <h3>3</h3>
-                    <p>Core Disciplines</p>
+                    <h3>$400M</h3>
+                    <p>All-Time AUM · 99% Uptime</p>
                 </article>
+            </div>
+        </section>
+
+        <section class="logo-bar">
+            <div class="logo-bar-inner">
+                <div class="logo-placeholder reveal">Logo</div>
+                <div class="logo-placeholder reveal delay-1">Logo</div>
+                <div class="logo-placeholder reveal delay-1">Logo</div>
+                <div class="logo-placeholder reveal delay-2">Logo</div>
             </div>
         </section>
 
@@ -1288,7 +1359,7 @@
             <div class="contact-shell reveal">
                 <div class="contact-copy">
                     <p class="eyebrow">Contact</p>
-                    <h2>Let's build something enduring.</h2>
+                    <h2>Let's build something.</h2>
                     <p>Tell us what you're building, where you are in the process, and what kind of support you need. We work with founders and financial firms building products that require clarity, rigor, and strong execution.</p>
                     <form class="contact-form" action="mailto:contact@sonderdev.ca" method="post" enctype="text/plain">
                         <div class="form-field">
