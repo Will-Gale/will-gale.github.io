@@ -241,6 +241,49 @@
             border-color: var(--purple-strong);
         }
 
+        .btn-hero {
+            position: relative;
+            overflow: hidden;
+            border-color: rgba(236, 229, 255, 0.62);
+            color: #f8f6ff;
+            background: linear-gradient(120deg, rgba(155, 114, 207, 0.16), rgba(255, 255, 255, 0.03));
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.08) inset, 0 0 30px rgba(191, 166, 247, 0.22);
+            transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease, background 280ms ease, color 280ms ease;
+        }
+
+        .btn-hero::before {
+            content: "";
+            position: absolute;
+            inset: -18%;
+            background:
+                radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255, 255, 255, 0.30), rgba(255, 255, 255, 0) 48%),
+                linear-gradient(110deg, rgba(255, 255, 255, 0) 32%, rgba(255, 255, 255, 0.25) 50%, rgba(255, 255, 255, 0) 68%);
+            transform: translateX(var(--sx, -30%));
+            transition: transform 420ms ease, opacity 240ms ease;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+
+        .btn-hero::after {
+            content: "";
+            position: absolute;
+            inset: -40%;
+            border-radius: 999px;
+            background: radial-gradient(circle, rgba(210, 191, 255, 0.38) 0%, rgba(210, 191, 255, 0) 68%);
+            filter: blur(12px);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        .btn-hero:hover {
+            transform: translateY(-2px) scale(1.01);
+            border-color: rgba(255, 255, 255, 0.85);
+            background: linear-gradient(120deg, rgba(181, 136, 234, 0.32), rgba(255, 255, 255, 0.05));
+            color: #fff;
+            box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18) inset, 0 10px 38px rgba(198, 173, 255, 0.34);
+            --sx: 35%;
+        }
+
         .stats {
             border-top: none;
             border-bottom: none;
@@ -1167,7 +1210,7 @@
             <div>
                 <h1 class="reveal">We build the software behind modern finance.</h1>
                 <p class="reveal delay-1">We build fintech products, platforms, and infrastructure with precision, resilience, and technical depth.</p>
-                <a class="btn reveal delay-2" href="#contact">Start a Conversation &rarr;</a>
+                <a class="btn btn-hero reveal delay-2" id="hero-cta" href="#contact">Start a Conversation &rarr;</a>
             </div>
         </header>
 
@@ -1559,120 +1602,416 @@
             }, { passive: true });
 
             var canvas = document.getElementById("webgl-canvas");
-            var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false });
             renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.6));
             renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0x07050d, 1);
 
             var scene = new THREE.Scene();
-            var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+            var camera = new THREE.OrthographicCamera(-1, 1, 1, -1, -2, 2);
+            camera.position.z = 1;
 
-            var uniforms = {
-                uTime: { value: 0 },
-                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
+            function PerlinNoise() {
+                var permutation = [
+                    151, 160, 137, 91, 90, 15, 131, 13, 201, 95, 96, 53, 194, 233, 7, 225,
+                    140, 36, 103, 30, 69, 142, 8, 99, 37, 240, 21, 10, 23, 190, 6, 148,
+                    247, 120, 234, 75, 0, 26, 197, 62, 94, 252, 219, 203, 117, 35, 11, 32,
+                    57, 177, 33, 88, 237, 149, 56, 87, 174, 20, 125, 136, 171, 168, 68, 175,
+                    74, 165, 71, 134, 139, 48, 27, 166, 77, 146, 158, 231, 83, 111, 229, 122,
+                    60, 211, 133, 230, 220, 105, 92, 41, 55, 46, 245, 40, 244, 102, 143, 54,
+                    65, 25, 63, 161, 1, 216, 80, 73, 209, 76, 132, 187, 208, 89, 18, 169,
+                    200, 196, 135, 130, 116, 188, 159, 86, 164, 100, 109, 198, 173, 186, 3, 64,
+                    52, 217, 226, 250, 124, 123, 5, 202, 38, 147, 118, 126, 255, 82, 85, 212,
+                    207, 206, 59, 227, 47, 16, 58, 17, 182, 189, 28, 42, 223, 183, 170, 213,
+                    119, 248, 152, 2, 44, 154, 163, 70, 221, 153, 101, 155, 167, 43, 172, 9,
+                    129, 22, 39, 253, 19, 98, 108, 110, 79, 113, 224, 232, 178, 185, 112, 104,
+                    218, 246, 97, 228, 251, 34, 242, 193, 238, 210, 144, 12, 191, 179, 162, 241,
+                    81, 51, 145, 235, 249, 14, 239, 107, 49, 192, 214, 31, 181, 199, 106, 157,
+                    184, 84, 204, 176, 115, 121, 50, 45, 127, 4, 150, 254, 138, 236, 205, 93,
+                    222, 114, 67, 29, 24, 72, 243, 141, 128, 195, 78, 66, 215, 61, 156, 180
+                ];
+                this.p = new Array(512);
+                for (var i = 0; i < 512; i++) {
+                    this.p[i] = permutation[i % 256];
+                }
+            }
+
+            PerlinNoise.prototype.fade = function (t) {
+                return t * t * t * (t * (t * 6 - 15) + 10);
             };
 
-            var material = new THREE.ShaderMaterial({
-                uniforms: uniforms,
-                transparent: true,
-                vertexShader: [
-                    "void main() {",
-                    "  gl_Position = vec4(position, 1.0);",
-                    "}"
-                ].join("\n"),
-                fragmentShader: [
-                    "precision highp float;",
-                    "uniform float uTime;",
-                    "uniform vec2 uResolution;",
-                    "",
-                    "float hash(vec2 p) {",
-                    "  p = fract(p * vec2(123.34, 456.21));",
-                    "  p += dot(p, p + 45.32);",
-                    "  return fract(p.x * p.y);",
-                    "}",
-                    "",
-                    "float noise(vec2 p) {",
-                    "  vec2 i = floor(p);",
-                    "  vec2 f = fract(p);",
-                    "  float a = hash(i);",
-                    "  float b = hash(i + vec2(1.0, 0.0));",
-                    "  float c = hash(i + vec2(0.0, 1.0));",
-                    "  float d = hash(i + vec2(1.0, 1.0));",
-                    "  vec2 u = f * f * (3.0 - 2.0 * f);",
-                    "  return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;",
-                    "}",
-                    "",
-                    "float fbm(vec2 p) {",
-                    "  float v = 0.0;",
-                    "  float a = 0.5;",
-                    "  for (int i = 0; i < 5; i++) {",
-                    "    v += a * noise(p);",
-                    "    p *= 2.03;",
-                    "    a *= 0.5;",
-                    "  }",
-                    "  return v;",
-                    "}",
-                    "",
-                    "void main() {",
-                    "  vec2 uv = gl_FragCoord.xy / uResolution.xy;",
-                    "  vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);",
-                    "  vec2 p = (uv - 0.5) * aspect + 0.5;",
-                    "",
-                    "  float t = uTime * 0.14;",
-                    "",
-                    "  float flow1 = fbm(vec2(p.x * 1.35 + t * 0.08, p.y * 1.25 - t * 0.05));",
-                    "  float flow2 = fbm(vec2(p.x * 1.15 - t * 0.06, p.y * 1.45 + t * 0.04));",
-                    "  float flowMix = (flow1 - 0.5) * 0.10 + (flow2 - 0.5) * 0.08;",
-                    "",
-                    "  float pathA = 0.56 + flowMix + sin((p.x * 1.25 + flow2 * 0.7) + t * 0.45) * 0.05;",
-                    "  float pathB = 0.44 - flowMix + sin((p.x * 1.15 + flow1 * 0.8) - t * 0.40 + 1.3) * 0.045;",
-                    "",
-                    "  float dA = abs(uv.y - pathA);",
-                    "  float dB = abs(uv.y - pathB);",
-                    "  float beamA = smoothstep(0.18, 0.0, dA);",
-                    "  float beamB = smoothstep(0.16, 0.0, dB);",
-                    "  float coreA = smoothstep(0.038, 0.0, dA);",
-                    "  float coreB = smoothstep(0.035, 0.0, dB);",
-                    "  float glowA = smoothstep(0.28, 0.0, dA);",
-                    "  float glowB = smoothstep(0.28, 0.0, dB);",
-                    "",
-                    "  vec3 bg = vec3(0.027, 0.020, 0.060);",
-                    "  vec3 colA = vec3(0.245, 0.140, 0.460);",
-                    "  vec3 colB = vec3(0.460, 0.285, 0.740);",
-                    "  vec3 colC = vec3(0.740, 0.550, 0.960);",
-                    "",
-                    "  float topoField = fbm(vec2(p.x * 2.2 + t * 0.03, p.y * 2.1 - t * 0.02));",
-                    "  float topoField2 = fbm(vec2(p.x * 1.8 - t * 0.02, p.y * 1.9 + t * 0.025));",
-                    "  float contourSignal = abs(sin((topoField * 1.2 + topoField2 * 0.8) * 130.0));",
-                    "  float contour = smoothstep(0.975, 0.996, contourSignal);",
-                    "",
-                    "  vec3 beamColorA = mix(colA, colC, coreA);",
-                    "  vec3 beamColorB = mix(colA, colB, coreB);",
-                    "  vec3 color = bg;",
-                    "  color += beamColorA * beamA * 0.50;",
-                    "  color += beamColorB * beamB * 0.44;",
-                    "  color += colC * (glowA * 0.11 + glowB * 0.10);",
-                    "  color += vec3(0.42, 0.26, 0.72) * contour * 0.16;",
-                    "",
-                    "  float vignette = smoothstep(1.06, 0.26, distance(uv, vec2(0.5)));",
-                    "  color *= vignette;",
-                    "",
-                    "  gl_FragColor = vec4(color, 0.97);",
-                    "}"
-                ].join("\n")
-            });
+            PerlinNoise.prototype.lerp = function (t, a, b) {
+                return a + t * (b - a);
+            };
 
-            var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
-            scene.add(quad);
+            PerlinNoise.prototype.grad = function (hash, x, y, z) {
+                var h = hash & 15;
+                var u = h < 8 ? x : y;
+                var v = h < 4 ? y : h === 12 || h === 14 ? x : z;
+                return ((h & 1) === 0 ? u : -u) + ((h & 2) === 0 ? v : -v);
+            };
+
+            PerlinNoise.prototype.noise = function (x, y, z) {
+                var X = Math.floor(x) & 255;
+                var Y = Math.floor(y) & 255;
+                var Z = Math.floor(z) & 255;
+
+                x -= Math.floor(x);
+                y -= Math.floor(y);
+                z -= Math.floor(z);
+
+                var u = this.fade(x);
+                var v = this.fade(y);
+                var w = this.fade(z);
+
+                var A = this.p[X] + Y;
+                var AA = this.p[A] + Z;
+                var AB = this.p[A + 1] + Z;
+                var B = this.p[X + 1] + Y;
+                var BA = this.p[B] + Z;
+                var BB = this.p[B + 1] + Z;
+
+                return this.lerp(
+                    w,
+                    this.lerp(
+                        v,
+                        this.lerp(u, this.grad(this.p[AA], x, y, z), this.grad(this.p[BA], x - 1, y, z)),
+                        this.lerp(u, this.grad(this.p[AB], x, y - 1, z), this.grad(this.p[BB], x - 1, y - 1, z))
+                    ),
+                    this.lerp(
+                        v,
+                        this.lerp(u, this.grad(this.p[AA + 1], x, y, z - 1), this.grad(this.p[BA + 1], x - 1, y, z - 1)),
+                        this.lerp(
+                            u,
+                            this.grad(this.p[AB + 1], x, y - 1, z - 1),
+                            this.grad(this.p[BB + 1], x - 1, y - 1, z - 1)
+                        )
+                    )
+                );
+            };
+
+            var perlin = new PerlinNoise();
+            var ribbonGroup = new THREE.Group();
+            scene.add(ribbonGroup);
+
+            var lineCount = 84;
+            var pointsPerLine = 220;
+            var lineData = [];
+            var colorStart = new THREE.Color(0xf5f5ff);
+            var colorEnd = new THREE.Color(0xffffff);
+            var particlesGeometry = null;
+            var particles = null;
+            var particlesGlowGeometry = null;
+            var particlesGlow = null;
+            var particleData = [];
+            var particleCount = 420;
+            var ctaButton = document.getElementById("hero-cta");
+            var ctaTrailGeometry = null;
+            var ctaTrail = null;
+            var ctaTrailData = [];
+            var ctaTrailCount = 190;
+
+            if (ctaButton) {
+                ctaButton.addEventListener("pointermove", function (event) {
+                    var rect = ctaButton.getBoundingClientRect();
+                    var mx = ((event.clientX - rect.left) / rect.width) * 100;
+                    var my = ((event.clientY - rect.top) / rect.height) * 100;
+                    ctaButton.style.setProperty("--mx", mx + "%");
+                    ctaButton.style.setProperty("--my", my + "%");
+                });
+                ctaButton.addEventListener("pointerleave", function () {
+                    ctaButton.style.setProperty("--mx", "50%");
+                    ctaButton.style.setProperty("--my", "50%");
+                });
+            }
+
+            function createRibbonLines() {
+                for (var i = 0; i < lineCount; i++) {
+                    var geometry = new THREE.BufferGeometry();
+                    var positions = new Float32Array(pointsPerLine * 3);
+                    var colors = new Float32Array(pointsPerLine * 3);
+
+                    for (var j = 0; j < pointsPerLine; j++) {
+                        var t = j / (pointsPerLine - 1);
+                        var c = colorStart.clone().lerp(colorEnd, t);
+                        positions[j * 3] = 0;
+                        positions[j * 3 + 1] = 0;
+                        positions[j * 3 + 2] = 0;
+                        colors[j * 3] = c.r;
+                        colors[j * 3 + 1] = c.g;
+                        colors[j * 3 + 2] = c.b;
+                    }
+
+                    geometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+                    geometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+
+                    var material = new THREE.LineBasicMaterial({
+                        vertexColors: true,
+                        transparent: true,
+                        opacity: 0.16,
+                        blending: THREE.AdditiveBlending,
+                        depthWrite: false,
+                        depthTest: false
+                    });
+
+                    var line = new THREE.Line(geometry, material);
+                    ribbonGroup.add(line);
+                    lineData.push({
+                        geometry: geometry,
+                        positions: positions,
+                        lineOffset: i * 0.11
+                    });
+                }
+            }
+
+            function createParticles() {
+                particlesGeometry = new THREE.BufferGeometry();
+                particlesGlowGeometry = new THREE.BufferGeometry();
+                var positions = new Float32Array(particleCount * 3);
+                var colors = new Float32Array(particleCount * 3);
+                var glowPositions = new Float32Array(particleCount * 3);
+                var glowColors = new Float32Array(particleCount * 3);
+                var aspect = window.innerWidth / window.innerHeight;
+                var xSpan = aspect * 2.6;
+                for (var i = 0; i < particleCount; i++) {
+                    var x = (Math.random() - 0.5) * xSpan;
+                    var y = -1.25 + Math.random() * 2.5;
+                    var z = -0.9 + Math.random() * 0.6;
+                    positions[i * 3] = x;
+                    positions[i * 3 + 1] = y;
+                    positions[i * 3 + 2] = z;
+                    glowPositions[i * 3] = x;
+                    glowPositions[i * 3 + 1] = y;
+                    glowPositions[i * 3 + 2] = z - 0.05;
+                    colors[i * 3] = 1;
+                    colors[i * 3 + 1] = 1;
+                    colors[i * 3 + 2] = 1;
+                    glowColors[i * 3] = 0.9;
+                    glowColors[i * 3 + 1] = 0.93;
+                    glowColors[i * 3 + 2] = 1;
+                    particleData.push({
+                        speed: 0.035 + Math.random() * 0.045,
+                        drift: (Math.random() - 0.5) * 0.06,
+                        seed: Math.random() * 20,
+                        phase: Math.random() * Math.PI * 2
+                    });
+                }
+                particlesGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+                particlesGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+                particlesGlowGeometry.setAttribute("position", new THREE.BufferAttribute(glowPositions, 3));
+                particlesGlowGeometry.setAttribute("color", new THREE.BufferAttribute(glowColors, 3));
+                var particlesMaterial = new THREE.PointsMaterial({
+                    size: 0.022,
+                    transparent: true,
+                    opacity: 0.62,
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    depthTest: false,
+                    sizeAttenuation: false
+                });
+                var particlesGlowMaterial = new THREE.PointsMaterial({
+                    size: 0.045,
+                    transparent: true,
+                    opacity: 0.2,
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    depthTest: false,
+                    sizeAttenuation: false
+                });
+                particles = new THREE.Points(particlesGeometry, particlesMaterial);
+                particlesGlow = new THREE.Points(particlesGlowGeometry, particlesGlowMaterial);
+                scene.add(particles);
+                scene.add(particlesGlow);
+            }
+
+            function getCtaAnchor() {
+                if (!ctaButton) {
+                    return { x: 0, y: 0.06, spread: 0.28 };
+                }
+                var rect = ctaButton.getBoundingClientRect();
+                var cx = rect.left + rect.width * 0.5;
+                var cy = rect.top + rect.height * 0.58;
+                var nx = cx / window.innerWidth;
+                var ny = 1 - cy / window.innerHeight;
+                var worldX = THREE.MathUtils.lerp(camera.left, camera.right, nx);
+                var worldY = THREE.MathUtils.lerp(camera.bottom, camera.top, ny);
+                var spread = Math.max(0.2, (rect.width / window.innerWidth) * (camera.right - camera.left) * 0.62);
+                return { x: worldX, y: worldY, spread: spread };
+            }
+
+            function spawnCtaTrailParticle(index, anchor, warmStart, positionsArray) {
+                var p = ctaTrailData[index];
+                var pos = positionsArray || (ctaTrailGeometry ? ctaTrailGeometry.attributes.position.array : null);
+                if (!pos) {
+                    return;
+                }
+                var base = index * 3;
+                p.life = 0;
+                p.duration = 1.15 + Math.random() * 1.35;
+                p.vx = (Math.random() - 0.5) * 0.03;
+                p.vy = 0.08 + Math.random() * 0.12;
+                p.seed = Math.random() * Math.PI * 2;
+                pos[base] = anchor.x + (Math.random() - 0.5) * anchor.spread;
+                pos[base + 1] = anchor.y - (0.24 + Math.random() * 0.34);
+                pos[base + 2] = -0.12 + Math.random() * 0.08;
+                if (warmStart) {
+                    p.life = Math.random() * p.duration;
+                    pos[base] += p.vx * p.life;
+                    pos[base + 1] += p.vy * p.life;
+                }
+            }
+
+            function createCtaTrailParticles() {
+                ctaTrailGeometry = new THREE.BufferGeometry();
+                var positions = new Float32Array(ctaTrailCount * 3);
+                var colors = new Float32Array(ctaTrailCount * 3);
+                var anchor = getCtaAnchor();
+                for (var i = 0; i < ctaTrailCount; i++) {
+                    colors[i * 3] = 1;
+                    colors[i * 3 + 1] = 1;
+                    colors[i * 3 + 2] = 1;
+                    ctaTrailData.push({
+                        life: 0,
+                        duration: 1,
+                        vx: 0,
+                        vy: -0.1,
+                        seed: 0
+                    });
+                    spawnCtaTrailParticle(i, anchor, true, positions);
+                }
+                ctaTrailGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+                ctaTrailGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+                var trailMaterial = new THREE.PointsMaterial({
+                    size: 0.022,
+                    transparent: true,
+                    opacity: 1,
+                    vertexColors: true,
+                    blending: THREE.AdditiveBlending,
+                    depthWrite: false,
+                    depthTest: false,
+                    sizeAttenuation: false
+                });
+                ctaTrail = new THREE.Points(ctaTrailGeometry, trailMaterial);
+                scene.add(ctaTrail);
+            }
+
+            function updateCamera() {
+                var aspect = window.innerWidth / window.innerHeight;
+                camera.left = -aspect;
+                camera.right = aspect;
+                camera.top = 1;
+                camera.bottom = -1;
+                camera.updateProjectionMatrix();
+            }
+
+            function updateRibbon(time) {
+                var halfWidth = window.innerWidth / window.innerHeight;
+                var waveWidth = halfWidth * 1.5;
+                for (var i = 0; i < lineData.length; i++) {
+                    var item = lineData[i];
+                    var positions = item.positions;
+                    var lineNorm = i / (lineCount - 1);
+                    var baseY = (lineNorm - 0.5) * 0.34;
+                    var zBase = (lineNorm - 0.5) * 0.16;
+                    for (var j = 0; j < pointsPerLine; j++) {
+                        var t = j / (pointsPerLine - 1);
+                        var x = -waveWidth + t * waveWidth * 2;
+                        var n1 = perlin.noise(x * 0.48 + item.lineOffset, lineNorm * 1.6, time * 0.22);
+                        var n2 = perlin.noise(x * 1.05 - item.lineOffset * 0.65, lineNorm * 2.8 + 3.2, time * 0.18);
+                        var y = baseY + n1 * 0.12 + n2 * 0.07;
+                        var z = zBase + perlin.noise(x * 0.62, lineNorm * 3.0, time * 0.15 + 7.7) * 0.05;
+                        positions[j * 3] = x;
+                        positions[j * 3 + 1] = y;
+                        positions[j * 3 + 2] = z;
+                    }
+                    item.geometry.attributes.position.needsUpdate = true;
+                }
+            }
+
+            function updateParticles(elapsed, delta) {
+                if (!particlesGeometry) {
+                    return;
+                }
+                var positions = particlesGeometry.attributes.position.array;
+                var glowPositions = particlesGlowGeometry.attributes.position.array;
+                var aspect = window.innerWidth / window.innerHeight;
+                var maxX = aspect * 1.45;
+                var minX = -maxX;
+                for (var i = 0; i < particleCount; i++) {
+                    var idx = i * 3;
+                    var meta = particleData[i];
+                    positions[idx + 1] += meta.speed * delta;
+                    positions[idx] += Math.sin(elapsed * 0.22 + meta.seed) * meta.drift * delta;
+                    positions[idx] += Math.cos(elapsed * 0.36 + meta.phase) * 0.004 * delta;
+                    glowPositions[idx] = positions[idx];
+                    glowPositions[idx + 1] = positions[idx + 1];
+                    glowPositions[idx + 2] = positions[idx + 2] - 0.05;
+                    if (positions[idx + 1] > 1.3) {
+                        positions[idx + 1] = -1.3;
+                        positions[idx] = minX + Math.random() * (maxX - minX);
+                        positions[idx + 2] = -0.9 + Math.random() * 0.6;
+                        meta.phase = Math.random() * Math.PI * 2;
+                        glowPositions[idx] = positions[idx];
+                        glowPositions[idx + 1] = positions[idx + 1];
+                        glowPositions[idx + 2] = positions[idx + 2] - 0.05;
+                    }
+                    if (positions[idx] > maxX) {
+                        positions[idx] = minX;
+                        glowPositions[idx] = minX;
+                    } else if (positions[idx] < minX) {
+                        positions[idx] = maxX;
+                        glowPositions[idx] = maxX;
+                    }
+                }
+                particlesGeometry.attributes.position.needsUpdate = true;
+                particlesGlowGeometry.attributes.position.needsUpdate = true;
+                if (particlesGlow && particlesGlow.material) {
+                    particlesGlow.material.opacity = 0.18 + (Math.sin(elapsed * 0.6) * 0.5 + 0.5) * 0.08;
+                }
+            }
+
+            function updateCtaTrailParticles(elapsed, delta) {
+                if (!ctaTrailGeometry) {
+                    return;
+                }
+                var anchor = getCtaAnchor();
+                var positions = ctaTrailGeometry.attributes.position.array;
+                for (var i = 0; i < ctaTrailCount; i++) {
+                    var base = i * 3;
+                    var p = ctaTrailData[i];
+                    p.life += delta;
+                    positions[base] += p.vx * delta + Math.sin(elapsed * 1.4 + p.seed) * 0.012 * delta;
+                    positions[base + 1] += p.vy * delta;
+                    if (p.life > p.duration || positions[base + 1] > anchor.y + 0.045) {
+                        spawnCtaTrailParticle(i, anchor, false);
+                    }
+                }
+                ctaTrailGeometry.attributes.position.needsUpdate = true;
+                if (ctaTrail && ctaTrail.material) {
+                    ctaTrail.material.opacity = 0.9 + (Math.sin(elapsed * 2.1) * 0.5 + 0.5) * 0.1;
+                }
+            }
+
+            createRibbonLines();
+            createParticles();
+            createCtaTrailParticles();
+            updateCamera();
 
             window.addEventListener("resize", function () {
                 renderer.setSize(window.innerWidth, window.innerHeight);
-                uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
+                updateCamera();
                 layoutCarousel();
             });
 
             var clock = new THREE.Clock();
             function tick() {
-                uniforms.uTime.value = clock.getElapsedTime();
+                var delta = clock.getDelta();
+                var elapsed = clock.elapsedTime;
+                updateRibbon(elapsed);
+                updateParticles(elapsed, delta);
+                updateCtaTrailParticles(elapsed, delta);
                 velocity *= 0.94;
                 carouselAngle += 0.12 + velocity;
                 trackEl.style.transform = "translate3d(-50%, -50%, 0) rotateY(" + carouselAngle + "deg)";
