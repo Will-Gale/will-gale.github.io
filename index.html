@@ -812,6 +812,26 @@
             box-shadow: inset 0 -1px 0 rgba(181, 136, 234, 0.55);
         }
 
+        .form-input.is-invalid,
+        .form-textarea.is-invalid {
+            border-color: #e07a8a;
+            background: rgba(224, 122, 138, 0.06);
+        }
+
+        .form-input.is-invalid:focus,
+        .form-textarea.is-invalid:focus {
+            border-color: #e07a8a;
+            box-shadow: inset 0 -1px 0 rgba(224, 122, 138, 0.5);
+        }
+
+        .field-error {
+            display: block;
+            font-size: 12px;
+            color: #f5b2c2;
+            margin-top: 8px;
+            min-height: 1.4em;
+        }
+
         .form-textarea {
             min-height: 132px;
             resize: vertical;
@@ -877,6 +897,18 @@
             max-width: 360px;
         }
 
+        .contact-status {
+            grid-column: 1 / -1;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #98d8b6;
+            min-height: 1.6em;
+        }
+
+        .contact-status.is-error {
+            color: #f5b2c2;
+        }
+
         .contact-submit {
             border: 1px solid var(--purple-strong);
             background: var(--purple-strong);
@@ -895,6 +927,14 @@
             transform: translateY(-1px);
             box-shadow: 0 12px 28px rgba(181, 136, 234, 0.22);
             background: #c298f4;
+        }
+
+        .contact-submit:disabled {
+            opacity: 0.65;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+            background: var(--purple-strong);
         }
 
         .contact-visual {
@@ -1404,22 +1444,28 @@
                     <p class="eyebrow">Contact</p>
                     <h2>Let's build something.</h2>
                     <p>Tell us what you're building, where you are in the process, and what kind of support you need. We work with founders and financial firms building products that require clarity, rigor, and strong execution.</p>
-                    <form class="contact-form" action="mailto:contact@sonderdev.ca" method="post" enctype="text/plain">
+                    <form class="contact-form" id="contact-form" action="https://formspree.io/f/xkoqzool" method="POST">
+                        <input type="hidden" name="_subject" value="New Sonder Development Inquiry">
+                        <input type="hidden" name="_format" value="plain">
                         <div class="form-field">
                             <label for="first-name">First name</label>
-                            <input class="form-input" id="first-name" type="text" name="first-name" autocomplete="given-name" placeholder="Jane">
+                            <input class="form-input" id="first-name" type="text" name="first-name" autocomplete="given-name" placeholder="Jane" required>
+                            <span class="field-error" id="error-first-name" role="alert"></span>
                         </div>
                         <div class="form-field">
                             <label for="last-name">Last name</label>
-                            <input class="form-input" id="last-name" type="text" name="last-name" autocomplete="family-name" placeholder="Doe">
+                            <input class="form-input" id="last-name" type="text" name="last-name" autocomplete="family-name" placeholder="Doe" required>
+                            <span class="field-error" id="error-last-name" role="alert"></span>
                         </div>
                         <div class="form-field-wide">
                             <label for="email">Email</label>
-                            <input class="form-input" id="email" type="email" name="email" autocomplete="email" placeholder="you@company.ca">
+                            <input class="form-input" id="email" type="email" name="email" autocomplete="email" placeholder="you@company.ca" required>
+                            <span class="field-error" id="error-email" role="alert"></span>
                         </div>
                         <div class="form-field-wide">
                             <label for="company">Company</label>
-                            <input class="form-input" id="company" type="text" name="company" autocomplete="organization" placeholder="Company name">
+                            <input class="form-input" id="company" type="text" name="company" autocomplete="organization" placeholder="Company name" required>
+                            <span class="field-error" id="error-company" role="alert"></span>
                         </div>
                         <div class="form-field-wide">
                             <label class="form-label-row" for="phone">
@@ -1433,7 +1479,8 @@
                                 <label for="message">How can we help?</label>
                                 <span>Max 500 characters</span>
                             </div>
-                            <textarea class="form-textarea" id="message" name="message" rows="5" maxlength="500" placeholder="A few lines on the product, the stage you're at, and what kind of help you're looking for."></textarea>
+                            <textarea class="form-textarea" id="message" name="message" rows="5" maxlength="500" placeholder="A few lines on the product, the stage you're at, and what kind of help you're looking for." required></textarea>
+                            <span class="field-error" id="error-message" role="alert"></span>
                         </div>
                         <fieldset class="budget-fieldset">
                             <legend>Expected budget</legend>
@@ -1456,8 +1503,9 @@
                                 </label>
                             </div>
                         </fieldset>
+                        <p class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
                         <div class="contact-actions">
-                            <p class="contact-note">Submissions open your default email client for now. If you prefer, you can also reach us directly at contact@sonderdev.ca.</p>
+                            <p class="contact-note">We review every inquiry carefully and usually reply within 1-2 business days.</p>
                             <button class="contact-submit" type="submit">Send Inquiry</button>
                         </div>
                     </form>
@@ -1502,6 +1550,133 @@
             window.addEventListener("scroll", function () {
                 nav.classList.toggle("scrolled", window.scrollY > 30);
             });
+
+            var contactForm = document.getElementById("contact-form");
+            if (contactForm) {
+                var contactStatus = document.getElementById("contact-status");
+                var contactSubmit = contactForm.querySelector(".contact-submit");
+
+                var fieldConfig = [
+                    { id: "first-name", required: true, message: "Please enter your first name." },
+                    { id: "last-name", required: true, message: "Please enter your last name." },
+                    { id: "email", required: true, email: true, message: "Please enter a valid email address." },
+                    { id: "company", required: true, message: "Please enter your company name." },
+                    { id: "message", required: true, message: "Please tell us how we can help." }
+                ];
+
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+                function setFieldError(fieldId, message) {
+                    var input = document.getElementById(fieldId);
+                    var errorEl = document.getElementById("error-" + fieldId);
+                    if (input) {
+                        input.classList.toggle("is-invalid", Boolean(message));
+                    }
+                    if (errorEl) {
+                        errorEl.textContent = message || "";
+                    }
+                }
+
+                function clearAllFieldErrors() {
+                    fieldConfig.forEach(function (c) {
+                        setFieldError(c.id, "");
+                    });
+                }
+
+                function validateForm() {
+                    clearAllFieldErrors();
+                    setContactStatus("", false);
+                    var firstInvalid = null;
+                    fieldConfig.forEach(function (c) {
+                        var input = document.getElementById(c.id);
+                        if (!input) return;
+                        var val = (input.value || "").trim();
+                        var msg = "";
+                        if (c.required && !val) {
+                            msg = c.message;
+                        } else if (c.email && val && !emailRegex.test(val)) {
+                            msg = "Please enter a valid email address.";
+                        }
+                        if (msg && !firstInvalid) {
+                            firstInvalid = input;
+                        }
+                        setFieldError(c.id, msg);
+                    });
+                    return firstInvalid;
+                }
+
+                function setContactStatus(message, isError) {
+                    if (!contactStatus) return;
+                    contactStatus.textContent = message;
+                    contactStatus.classList.toggle("is-error", Boolean(isError));
+                }
+
+                fieldConfig.forEach(function (c) {
+                    var input = document.getElementById(c.id);
+                    if (input) {
+                        input.addEventListener("input", function () {
+                            setFieldError(c.id, "");
+                        });
+                        input.addEventListener("blur", function () {
+                            var val = (input.value || "").trim();
+                            if (c.required && !val) {
+                                setFieldError(c.id, c.message);
+                            } else if (c.email && val && !emailRegex.test(val)) {
+                                setFieldError(c.id, "Please enter a valid email address.");
+                            } else {
+                                setFieldError(c.id, "");
+                            }
+                        });
+                    }
+                });
+
+                contactForm.addEventListener("submit", function (event) {
+                    event.preventDefault();
+
+                    var formEndpoint = contactForm.getAttribute("action") || "";
+                    if (formEndpoint.indexOf("formspree.io/f/") === -1) {
+                        setContactStatus("Form endpoint is invalid. Please verify configuration.", true);
+                        return;
+                    }
+
+                    var firstInvalid = validateForm();
+                    if (firstInvalid) {
+                        setContactStatus("Please fix the errors above.", true);
+                        firstInvalid.focus();
+                        return;
+                    }
+
+                    if (contactSubmit) contactSubmit.disabled = true;
+                    setContactStatus("Sending your inquiry...", false);
+
+                    fetch(formEndpoint, {
+                        method: "POST",
+                        body: new FormData(contactForm),
+                        headers: {
+                            Accept: "application/json"
+                        }
+                    }).then(function (response) {
+                        return response.json().then(function (payload) {
+                            if (!response.ok) {
+                                var defaultMessage = "We could not send your inquiry. Please try again.";
+                                var detailMessage = payload && payload.errors && payload.errors[0] && payload.errors[0].message;
+                                throw new Error(detailMessage || defaultMessage);
+                            }
+                            return payload;
+                        });
+                    }).then(function () {
+                        contactForm.reset();
+                        clearAllFieldErrors();
+                        setContactStatus("Thanks. Your inquiry has been sent to contact@sonderdev.ca.", false);
+                    }).catch(function (error) {
+                        setContactStatus(error && error.message ? error.message : "There was a problem sending your inquiry.", true);
+                    }).finally(function () {
+                        if (contactSubmit) {
+                            contactSubmit.disabled = false;
+                        }
+                    });
+                });
+            }
 
             var revealItems = document.querySelectorAll(".reveal");
             var observer = new IntersectionObserver(function (entries) {
