@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>sonderdev.ca</title>
-    <meta name="description" content="Sonder Development is a boutique fintech software studio building SaaS, web, and mobile products for financial institutions.">
+    <title>Sonder Development | Software for Financial Products</title>
+    <meta name="description" content="Sonder Development builds fintech products, financial platforms, and infrastructure for ambitious founders and modern financial companies.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap" rel="stylesheet">
@@ -24,6 +24,9 @@
             --purple: #9b72cf;
             --purple-strong: #b588ea;
             --purple-soft: rgba(155, 114, 207, 0.2);
+            --panel-dark: rgba(10, 8, 18, 0.88);
+            --panel-dark-strong: rgba(13, 10, 24, 0.94);
+            --panel-border: rgba(181, 136, 234, 0.12);
             --font-heading: "Newsreader", "Times New Roman", serif;
             --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
@@ -37,7 +40,9 @@
             color: var(--ink);
             background: var(--bg);
             overflow-x: hidden;
-            line-height: 1.6;
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .webgl-layer {
@@ -96,11 +101,10 @@
         }
 
         .nav-logo img {
-            width: 132px;
-            height: 132px;
+            width: 80px;
+            height: 80px;
             object-fit: contain;
-            filter: saturate(1.18) contrast(1.1);
-            mix-blend-mode: screen;
+            display: block;
         }
 
         .nav-link {
@@ -141,6 +145,59 @@
             padding: 120px 24px 80px;
         }
 
+        section,
+        .footer {
+            position: relative;
+            isolation: isolate;
+        }
+
+        .section-panel::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: calc((100vw - 100%) / -2);
+            bottom: 0;
+            left: calc((100vw - 100%) / -2);
+            background: linear-gradient(180deg, var(--panel-dark-strong) 0%, var(--panel-dark) 100%);
+            border-top: 1px solid var(--panel-border);
+            border-bottom: 1px solid rgba(181, 136, 234, 0.08);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02), 0 14px 36px rgba(0, 0, 0, 0.14);
+            z-index: -2;
+        }
+
+        .section-panel::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            right: calc((100vw - 100%) / -2);
+            bottom: 0;
+            left: calc((100vw - 100%) / -2);
+            background:
+                radial-gradient(circle at 18% 22%, rgba(181, 136, 234, 0.14), transparent 32%),
+                radial-gradient(circle at 82% 72%, rgba(98, 72, 163, 0.14), transparent 36%);
+            opacity: 0.32;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .section-open::before {
+            content: "";
+            position: absolute;
+            top: 8%;
+            right: calc((100vw - 100%) / -2);
+            bottom: 8%;
+            left: calc((100vw - 100%) / -2);
+            background:
+                radial-gradient(circle at 16% 26%, rgba(181, 136, 234, 0.08), transparent 26%),
+                radial-gradient(circle at 78% 68%, rgba(127, 92, 206, 0.06), transparent 28%);
+            filter: blur(14px);
+            opacity: 0.42;
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .hero h1 {
             font-family: var(--font-heading);
             font-size: clamp(40px, 7vw, 78px);
@@ -151,11 +208,12 @@
         }
 
         .hero p {
-            color: var(--muted);
-            font-size: clamp(15px, 2vw, 20px);
+            color: #c8c4dc;
+            font-size: clamp(16px, 2.2vw, 20px);
             margin: 0 auto 44px;
             max-width: 620px;
-            font-weight: 300;
+            font-weight: 400;
+            line-height: 1.65;
         }
 
         .btn {
@@ -177,10 +235,10 @@
         }
 
         .stats {
-            border-top: 1px solid var(--line);
-            border-bottom: 1px solid var(--line);
-            background: rgba(15, 11, 26, 0.62);
-            backdrop-filter: blur(4px);
+            border-top: none;
+            border-bottom: none;
+            background: transparent;
+            backdrop-filter: none;
         }
 
         .stats-grid {
@@ -210,17 +268,149 @@
         }
 
         .stat p {
-            color: #8f87a8;
+            color: #a59fc2;
             font-size: 12px;
             letter-spacing: 0.09em;
             text-transform: uppercase;
         }
 
+        .about.section-panel::before {
+            background: linear-gradient(180deg, rgba(12, 9, 22, 0.96) 0%, rgba(10, 8, 18, 0.94) 100%);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .about.section-panel::after {
+            opacity: 0.2;
+        }
+
         .about {
-            max-width: 640px;
+            max-width: 1160px;
             margin: 0 auto;
-            text-align: center;
-            padding: 140px 24px;
+            padding: 120px 24px;
+        }
+
+        .about-shell {
+            max-width: 940px;
+            margin: 0 auto;
+        }
+
+        .about-intro {
+            max-width: 720px;
+            margin-bottom: 48px;
+        }
+
+        .about-intro h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(32px, 4vw, 46px);
+            line-height: 1.1;
+            font-weight: 500;
+            letter-spacing: -0.02em;
+            margin-bottom: 20px;
+            color: #f4f1fb;
+            max-width: 13ch;
+        }
+
+        .about-intro p:last-child {
+            font-family: var(--font-body);
+            color: #c2bbd7;
+            font-size: 16px;
+            line-height: 1.75;
+            max-width: 60ch;
+        }
+
+        .about-list {
+            border-top: 1px solid rgba(181, 136, 234, 0.14);
+            border-bottom: 1px solid rgba(181, 136, 234, 0.1);
+        }
+
+        .about-item {
+            border-top: 1px solid rgba(181, 136, 234, 0.1);
+        }
+
+        .about-item:first-child {
+            border-top: none;
+        }
+
+        .about-toggle {
+            width: 100%;
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 24px;
+            padding: 24px 0;
+            border: none;
+            background: transparent;
+            color: var(--ink);
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .about-toggle-title {
+            display: block;
+            max-width: 38ch;
+            font-size: 17px;
+            line-height: 1.6;
+            font-weight: 500;
+            letter-spacing: 0;
+        }
+
+        .about-toggle-meta {
+            display: block;
+            margin-bottom: 6px;
+            color: #a78ad6;
+            font-size: 11px;
+            line-height: 1.4;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        .about-toggle-icon {
+            position: relative;
+            flex: 0 0 24px;
+            width: 24px;
+            height: 24px;
+            margin-top: 2px;
+            color: #cbb8ec;
+        }
+
+        .about-toggle-icon::before,
+        .about-toggle-icon::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 16px;
+            height: 1.5px;
+            background: currentColor;
+            transform: translate(-50%, -50%);
+            transition: transform 220ms ease, opacity 220ms ease;
+        }
+
+        .about-toggle-icon::after {
+            transform: translate(-50%, -50%) rotate(90deg);
+        }
+
+        .about-toggle[aria-expanded="true"] .about-toggle-icon::after {
+            opacity: 0;
+            transform: translate(-50%, -50%) rotate(90deg) scaleX(0.4);
+        }
+
+        .about-panel {
+            padding: 0 56px 24px 0;
+        }
+
+        .about-panel[hidden] {
+            display: none;
+        }
+
+        .about-panel p {
+            font-family: var(--font-body);
+            color: #bfb7d4;
+            font-size: 16px;
+            line-height: 1.72;
+            max-width: 62ch;
         }
 
         .logos {
@@ -240,10 +430,10 @@
 
         .logos-note {
             text-align: center;
-            color: #968eaf;
+            color: #a59fc2;
             margin-bottom: 50px;
             font-size: 14px;
-            font-weight: 300;
+            font-weight: 400;
         }
 
         .carousel-scene {
@@ -296,13 +486,6 @@
             font-weight: 500;
         }
 
-        .about p {
-            font-family: var(--font-heading);
-            font-size: clamp(22px, 3vw, 30px);
-            line-height: 1.65;
-            color: #e9e6f3;
-        }
-
         .services {
             max-width: 1160px;
             margin: 0 auto;
@@ -312,7 +495,44 @@
         .services-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
+            gap: 20px;
+        }
+
+        .value-section {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 100px 24px 120px;
+            border-top: none;
+        }
+
+        .value-section .eyebrow {
+            margin-bottom: 36px;
+        }
+
+        .value-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+        }
+
+        .value-item {
+            padding: 28px 0 0;
+            border-top: 1px solid var(--line);
+        }
+
+        .value-item h3 {
+            font-family: var(--font-heading);
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            color: var(--ink);
+        }
+
+        .value-item p {
+            color: #b8b0cc;
+            font-size: 15px;
+            line-height: 1.75;
+            font-weight: 400;
         }
 
         .card {
@@ -364,14 +584,14 @@
         }
 
         .card p {
-            color: #a097b8;
-            font-size: 14px;
-            font-weight: 300;
-            line-height: 1.7;
+            color: #b8b0cc;
+            font-size: 15px;
+            font-weight: 400;
+            line-height: 1.75;
         }
 
         .closing {
-            border-top: 1px solid var(--line);
+            border-top: none;
             padding: 120px 24px;
             text-align: center;
         }
@@ -386,29 +606,296 @@
             color: #eeebf8;
         }
 
+        .contact-section {
+            max-width: none;
+            margin: 0;
+            padding: 24px 0 0;
+            scroll-margin-top: 110px;
+        }
+
+        .contact-shell {
+            display: grid;
+            grid-template-columns: minmax(320px, 0.9fr) minmax(0, 1.1fr);
+            gap: 0;
+            align-items: stretch;
+            width: 100%;
+        }
+
+        .contact-copy {
+            padding: 56px 48px 42px;
+            background: rgba(9, 7, 16, 1);
+        }
+
+        .contact-copy h2 {
+            font-family: var(--font-heading);
+            font-size: clamp(34px, 5vw, 56px);
+            line-height: 1.02;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            max-width: 10ch;
+            margin-bottom: 18px;
+        }
+
+        .contact-copy > p {
+            max-width: 560px;
+            color: #bdb6d1;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 38px;
+        }
+
+        .contact-form {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .form-field,
+        .form-field-wide,
+        .budget-fieldset {
+            min-width: 0;
+        }
+
+        .form-field-wide,
+        .budget-fieldset {
+            grid-column: 1 / -1;
+        }
+
+        .form-label-row,
+        .form-field label,
+        .form-field-wide label,
+        .budget-fieldset legend {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            gap: 12px;
+            color: var(--ink);
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .form-label-row span:last-child {
+            color: #7f7893;
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            text-transform: none;
+            font-weight: 400;
+        }
+
+        .form-input,
+        .form-textarea {
+            width: 100%;
+            border: none;
+            border-bottom: 1px solid rgba(181, 136, 234, 0.16);
+            background: rgba(255, 255, 255, 0.02);
+            color: var(--ink);
+            padding: 15px 0;
+            font: inherit;
+            outline: none;
+            transition: border-color 220ms ease, background 220ms ease, box-shadow 220ms ease;
+        }
+
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: #6f6788;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus {
+            border-color: rgba(181, 136, 234, 0.55);
+            background: rgba(255, 255, 255, 0.035);
+            box-shadow: inset 0 -1px 0 rgba(181, 136, 234, 0.55);
+        }
+
+        .form-textarea {
+            min-height: 132px;
+            resize: vertical;
+            padding-left: 0;
+            padding-right: 0;
+        }
+
+        .budget-options {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .budget-option {
+            position: relative;
+        }
+
+        .budget-option input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .budget-option span {
+            display: block;
+            border: none;
+            background: rgba(255, 255, 255, 0.035);
+            color: #c6bfd9;
+            padding: 14px 16px;
+            font-size: 14px;
+            transition: background 220ms ease, color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+        }
+
+        .budget-option input:checked + span,
+        .budget-option:hover span {
+            background: rgba(181, 136, 234, 0.08);
+            color: var(--ink);
+            transform: translateY(-1px);
+            box-shadow: inset 0 0 0 1px rgba(181, 136, 234, 0.24);
+        }
+
+        .contact-actions {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            padding-top: 10px;
+        }
+
+        .contact-note {
+            color: #8b84a1;
+            font-size: 13px;
+            line-height: 1.7;
+            max-width: 360px;
+        }
+
+        .contact-submit {
+            border: 1px solid var(--purple-strong);
+            background: var(--purple-strong);
+            color: var(--bg);
+            padding: 15px 26px;
+            font: inherit;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+        }
+
+        .contact-submit:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 28px rgba(181, 136, 234, 0.22);
+            background: #c298f4;
+        }
+
+        .contact-visual {
+            position: relative;
+            min-height: 100%;
+            padding: 56px 40px 42px 48px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: center;
+            order: -1;
+            overflow: hidden;
+            background:
+                linear-gradient(180deg, rgba(6, 4, 12, 0.34) 0%, rgba(6, 4, 12, 0.76) 100%),
+                url("gptimage.png");
+            background-position: center;
+            background-size: cover;
+        }
+
+        .contact-visual::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(180deg, rgba(5, 3, 10, 0.2) 0%, rgba(5, 3, 10, 0.72) 100%),
+                radial-gradient(circle at 22% 24%, rgba(181, 136, 234, 0.18), transparent 34%),
+                radial-gradient(circle at 76% 74%, rgba(127, 92, 206, 0.12), transparent 34%);
+        }
+
+        .contact-visual-card {
+            position: relative;
+            width: min(100%, 420px);
+            min-height: 520px;
+            padding: 34px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            background: linear-gradient(180deg, rgba(7, 5, 13, 0.18) 0%, rgba(7, 5, 13, 0.34) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .contact-visual-mark {
+            width: 88px;
+            height: 88px;
+            object-fit: contain;
+            opacity: 0.96;
+        }
+
+        .contact-visual-copy h3 {
+            font-family: var(--font-heading);
+            font-size: clamp(28px, 3.4vw, 40px);
+            line-height: 1.08;
+            font-weight: 500;
+            letter-spacing: -0.03em;
+            margin: 24px 0 16px;
+            max-width: 9ch;
+        }
+
+        .contact-visual-copy p {
+            color: #b8b1cd;
+            font-size: 15px;
+            line-height: 1.8;
+            max-width: 30ch;
+        }
+
+        .contact-highlights {
+            display: grid;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .contact-highlight {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            padding-top: 14px;
+            background: linear-gradient(90deg, rgba(181, 136, 234, 0.06), transparent 70%);
+            padding: 14px 14px 14px 16px;
+            color: #cfc8e1;
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        .contact-highlight strong {
+            color: var(--ink);
+            font-size: 13px;
+            letter-spacing: 0.04em;
+        }
+
         .footer {
-            border-top: 1px solid var(--line);
+            border-top: none;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 18px;
             padding: 28px 48px;
-            background: rgba(7, 5, 13, 0.55);
+            background: transparent;
         }
 
         .footer img {
-            width: 64px;
-            height: 64px;
+            width: 56px;
+            height: 56px;
             object-fit: contain;
-            filter: saturate(1.18) contrast(1.1);
-            mix-blend-mode: screen;
-            opacity: 0.95;
         }
 
         .footer p,
         .footer a {
             font-size: 12px;
-            color: #9b95b1;
+            color: #b0aac4;
             text-decoration: none;
             letter-spacing: 0.05em;
         }
@@ -436,8 +923,20 @@
             transition-delay: 220ms;
         }
 
+        .delay-3 {
+            transition-delay: 320ms;
+        }
+
+        .delay-4 {
+            transition-delay: 420ms;
+        }
+
         @media (max-width: 900px) {
             .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .value-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -453,16 +952,105 @@
             .stat:last-child {
                 border-bottom: none;
             }
+
+            .contact-shell {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+
+            .contact-visual {
+                min-height: 0;
+                padding-top: 0;
+                order: 0;
+            }
+
+            .contact-visual-card {
+                min-height: 0;
+                width: 100%;
+            }
+
+            .about {
+                padding: 104px 24px;
+            }
+
+            .about-intro h2 {
+                max-width: none;
+            }
+
+            .about-panel {
+                padding-right: 20px;
+            }
         }
 
         @media (max-width: 768px) {
+            .section-panel::before {
+                backdrop-filter: blur(6px);
+                -webkit-backdrop-filter: blur(6px);
+            }
+
+            .section-open::before {
+                top: 6%;
+                bottom: 6%;
+                filter: blur(10px);
+            }
+
             .nav {
                 padding: 18px 20px;
             }
 
+            .contact-section {
+                padding: 18px 0 0;
+            }
+
+            .contact-copy,
+            .contact-visual {
+                padding: 28px 24px 0;
+            }
+
+            .contact-form,
+            .budget-options {
+                grid-template-columns: 1fr;
+            }
+
+            .contact-actions {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .contact-submit {
+                width: 100%;
+            }
+
+            .about {
+                padding: 84px 20px;
+            }
+
+            .about-intro {
+                margin-bottom: 34px;
+            }
+
+            .about-toggle {
+                gap: 16px;
+                padding: 20px 0;
+            }
+
+            .about-toggle-title {
+                font-size: 16px;
+                max-width: none;
+            }
+
+            .about-toggle-meta {
+                margin-bottom: 5px;
+                font-size: 10px;
+            }
+
+            .about-panel {
+                padding: 0 0 20px;
+            }
+
             .nav-logo img {
-                width: 104px;
-                height: 104px;
+                width: 44px;
+                height: 44px;
             }
 
             .carousel-scene {
@@ -489,20 +1077,20 @@
     <div class="site">
         <nav class="nav" id="nav">
             <a class="nav-logo" href="#">
-                <img class="logo-mark" src="logo-clean.png" alt="Sonder Development logo">
+                <img src="Sonder-DevelopCLR.png" alt="Sonder Development logo">
             </a>
             <a class="nav-link" href="#contact">Contact</a>
         </nav>
 
         <header class="hero">
             <div>
-                <h1 class="reveal">We build the infrastructure of finance.</h1>
-                <p class="reveal delay-1">Software for the platforms that move markets.</p>
-                <a class="btn reveal delay-2" href="#contact">Start a Project &rarr;</a>
+                <h1 class="reveal">We build the software behind modern finance.</h1>
+                <p class="reveal delay-1">We build fintech products, platforms, and infrastructure with precision, resilience, and technical depth.</p>
+                <a class="btn reveal delay-2" href="#contact">Start a Conversation &rarr;</a>
             </div>
         </header>
 
-        <section class="stats">
+        <section class="stats section-panel">
             <div class="stats-grid">
                 <article class="stat reveal">
                     <h3>100,000+</h3>
@@ -519,8 +1107,8 @@
             </div>
         </section>
 
-        <section class="logos">
-            <p class="logos-headline reveal">Trusted Across Financial Product Teams</p>
+        <section class="logos section-open">
+            <p class="logos-headline reveal">Trusted by Financial Product Teams</p>
             <p class="logos-note reveal delay-1">Drag to rotate</p>
             <div class="carousel-scene reveal delay-2" id="carousel-scene">
                 <div class="carousel-track" id="carousel-track">
@@ -537,13 +1125,62 @@
             </div>
         </section>
 
-        <section class="about">
-            <p class="eyebrow reveal">About</p>
-            <p class="reveal delay-1">Sonder Development is a boutique software studio. We design and build SaaS, web, and mobile products for financial institutions and the firms that serve them.</p>
+        <section class="about section-panel">
+            <div class="about-shell">
+                <div class="about-intro reveal">
+                    <p class="eyebrow">About</p>
+                    <h2>Built for financial products that have to hold up in the real world.</h2>
+                    <p>Sonder Development works with founders, operators, and financial firms building products where product quality, technical depth, and execution discipline all matter. We stay close to the work and design for the operational realities that come with financial software.</p>
+                </div>
+                <dl class="about-list">
+                    <div class="about-item reveal delay-1">
+                        <dt>
+                            <button class="about-toggle" type="button" aria-expanded="true" aria-controls="about-panel-1" data-about-toggle>
+                                <span>
+                                    <span class="about-toggle-meta">Who We Work With</span>
+                                    <span class="about-toggle-title">Founders, operators, and firms building serious financial products.</span>
+                                </span>
+                                <span class="about-toggle-icon" aria-hidden="true"></span>
+                            </button>
+                        </dt>
+                        <dd class="about-panel" id="about-panel-1">
+                            <p>We partner with post-raise founders needing execution, experienced operators launching a new fintech, and established financial companies modernizing existing platforms. The common thread is ambition paired with real product and operational complexity.</p>
+                        </dd>
+                    </div>
+                    <div class="about-item reveal delay-2">
+                        <dt>
+                            <button class="about-toggle" type="button" aria-expanded="false" aria-controls="about-panel-2" data-about-toggle>
+                                <span>
+                                    <span class="about-toggle-meta">How We Engage</span>
+                                    <span class="about-toggle-title">A senior team that brings product thinking and engineering execution together.</span>
+                                </span>
+                                <span class="about-toggle-icon" aria-hidden="true"></span>
+                            </button>
+                        </dt>
+                        <dd class="about-panel" id="about-panel-2" hidden>
+                            <p>We help shape the product, make key technical decisions, and build with a high level of ownership. Instead of separating strategy from delivery, we keep both in the same conversation so momentum does not come at the expense of quality.</p>
+                        </dd>
+                    </div>
+                    <div class="about-item reveal delay-3">
+                        <dt>
+                            <button class="about-toggle" type="button" aria-expanded="false" aria-controls="about-panel-3" data-about-toggle>
+                                <span>
+                                    <span class="about-toggle-meta">Why It Matters</span>
+                                    <span class="about-toggle-title">Financial software has to be clear, resilient, and credible from day one.</span>
+                                </span>
+                                <span class="about-toggle-icon" aria-hidden="true"></span>
+                            </button>
+                        </dt>
+                        <dd class="about-panel" id="about-panel-3" hidden>
+                            <p>In fintech, the margin for vague thinking is small. We build for the demands that come with real money movement, regulated workflows, internal controls, and user trust, so the product stands up not just in demos, but in production.</p>
+                        </dd>
+                    </div>
+                </dl>
+            </div>
         </section>
 
-        <section class="services">
-            <p class="eyebrow reveal">Services</p>
+        <section class="services section-open">
+            <p class="eyebrow reveal">Capabilities</p>
             <div class="services-grid">
                 <article class="card reveal">
                     <div class="icon">
@@ -553,8 +1190,8 @@
                             <line x1="14" y1="16" x2="14" y2="32"></line>
                         </svg>
                     </div>
-                    <h3>SaaS Platforms</h3>
-                    <p>Scalable, secure product ecosystems engineered for institutional-grade use.</p>
+                    <h3>Fintech Products</h3>
+                    <p>We help teams turn strong ideas into well-structured financial products, from early definition through launch and iteration.</p>
                 </article>
                 <article class="card reveal delay-1">
                     <div class="icon">
@@ -565,8 +1202,8 @@
                             <line x1="12" y1="26" x2="18" y2="26"></line>
                         </svg>
                     </div>
-                    <h3>Web Applications</h3>
-                    <p>Client portals and advisor experiences where precision and usability must coexist.</p>
+                    <h3>Platforms &amp; Applications</h3>
+                    <p>Client-facing platforms and internal applications designed for clarity, reliability, and the complexity of financial workflows.</p>
                 </article>
                 <article class="card reveal delay-2">
                     <div class="icon">
@@ -577,20 +1214,150 @@
                         </svg>
                     </div>
                     <h3>Mobile Products</h3>
-                    <p>Mobile-first fintech products designed for speed, trust, and daily engagement.</p>
+                    <p>Mobile experiences built for confidence, speed, and everyday use in regulated financial environments.</p>
+                </article>
+                <article class="card reveal delay-3">
+                    <div class="icon">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 14h8l4-4 4 4h8"></path>
+                            <path d="M8 22h24"></path>
+                            <path d="M8 28h16"></path>
+                        </svg>
+                    </div>
+                    <h3>Infrastructure &amp; Integrations</h3>
+                    <p>Financial infrastructure, APIs, and integrations that connect your product to the systems, providers, and partners it depends on.</p>
+                </article>
+                <article class="card reveal delay-4">
+                    <div class="icon">
+                        <svg viewBox="0 0 40 40" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 6l-12 6v10l12 6 12-6V12L20 6z"></path>
+                            <path d="M20 12v12"></path>
+                            <path d="M8 12l12 6 12-6"></path>
+                        </svg>
+                    </div>
+                    <h3>Security &amp; Compliance</h3>
+                    <p>Delivery shaped by the standards financial products demand, with security, controls, and auditability considered from the start.</p>
                 </article>
             </div>
         </section>
 
-        <section class="closing" id="contact">
-            <blockquote class="reveal">"Digital architects building the future of finance."</blockquote>
-            <a class="btn reveal delay-1" href="mailto:hello@sonderdev.com">Get in Touch</a>
+        <section class="value-section section-panel">
+            <p class="eyebrow reveal">Why Sonder</p>
+            <div class="value-grid">
+                <div class="value-item reveal">
+                    <h3>Fintech fluency</h3>
+                    <p>We understand the demands of financial products, where precision, operational detail, and user confidence matter as much as design and code.</p>
+                </div>
+                <div class="value-item reveal delay-1">
+                    <h3>Strategic execution</h3>
+                    <p>We bring product thinking and technical depth to the work, helping teams make strong decisions and move from idea to launch without losing rigor.</p>
+                </div>
+                <div class="value-item reveal delay-2">
+                    <h3>Senior, low-ego partnership</h3>
+                    <p>We integrate closely with your team and stay accountable to the outcome, with experienced hands on the product from early direction through production.</p>
+                </div>
+            </div>
         </section>
 
-        <footer class="footer">
-            <a href="#"><img class="logo-mark" src="logo-clean.png" alt="Sonder Development logo"></a>
+        <section class="closing section-open">
+            <blockquote class="reveal">Built for the next generation of financial products.</blockquote>
+            <a class="btn reveal delay-1" href="#contact">Get in Touch</a>
+        </section>
+
+        <section class="contact-section section-open" id="contact">
+            <div class="contact-shell reveal">
+                <div class="contact-copy">
+                    <p class="eyebrow">Contact</p>
+                    <h2>Let's build something enduring.</h2>
+                    <p>Tell us what you're building, where you are in the process, and what kind of support you need. We work with founders and financial firms building products that require clarity, rigor, and strong execution.</p>
+                    <form class="contact-form" action="mailto:contact@sonderdev.ca" method="post" enctype="text/plain">
+                        <div class="form-field">
+                            <label for="first-name">First name</label>
+                            <input class="form-input" id="first-name" type="text" name="first-name" autocomplete="given-name" placeholder="Jane">
+                        </div>
+                        <div class="form-field">
+                            <label for="last-name">Last name</label>
+                            <input class="form-input" id="last-name" type="text" name="last-name" autocomplete="family-name" placeholder="Doe">
+                        </div>
+                        <div class="form-field-wide">
+                            <label for="email">Email</label>
+                            <input class="form-input" id="email" type="email" name="email" autocomplete="email" placeholder="you@company.ca">
+                        </div>
+                        <div class="form-field-wide">
+                            <label for="company">Company</label>
+                            <input class="form-input" id="company" type="text" name="company" autocomplete="organization" placeholder="Company name">
+                        </div>
+                        <div class="form-field-wide">
+                            <label class="form-label-row" for="phone">
+                                <span>Phone</span>
+                                <span>Optional</span>
+                            </label>
+                            <input class="form-input" id="phone" type="tel" name="phone" autocomplete="tel" placeholder="+1 (555) 555-5555">
+                        </div>
+                        <div class="form-field-wide">
+                            <div class="form-label-row">
+                                <label for="message">How can we help?</label>
+                                <span>Max 500 characters</span>
+                            </div>
+                            <textarea class="form-textarea" id="message" name="message" rows="5" maxlength="500" placeholder="A few lines on the product, the stage you're at, and what kind of help you're looking for."></textarea>
+                        </div>
+                        <fieldset class="budget-fieldset">
+                            <legend>Expected budget</legend>
+                            <div class="budget-options">
+                                <label class="budget-option" for="budget-under-25k">
+                                    <input id="budget-under-25k" type="radio" name="budget" value="under_25k" checked>
+                                    <span>Less than $25K</span>
+                                </label>
+                                <label class="budget-option" for="budget-25k-50k">
+                                    <input id="budget-25k-50k" type="radio" name="budget" value="25k_50k">
+                                    <span>$25K - $50K</span>
+                                </label>
+                                <label class="budget-option" for="budget-50k-100k">
+                                    <input id="budget-50k-100k" type="radio" name="budget" value="50k_100k">
+                                    <span>$50K - $100K</span>
+                                </label>
+                                <label class="budget-option" for="budget-over-100k">
+                                    <input id="budget-over-100k" type="radio" name="budget" value="over_100k">
+                                    <span>$100K+</span>
+                                </label>
+                            </div>
+                        </fieldset>
+                        <div class="contact-actions">
+                            <p class="contact-note">Submissions open your default email client for now. If you prefer, you can also reach us directly at contact@sonderdev.ca.</p>
+                            <button class="contact-submit" type="submit">Send Inquiry</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="contact-visual">
+                    <div class="contact-visual-card reveal delay-1">
+                        <div class="contact-visual-copy">
+                            <img class="contact-visual-mark" src="Sonder-DevelopCLR.png" alt="Sonder Development mark">
+                            <h3>Built for serious financial products.</h3>
+                            <p>From new fintech ideas to modernization inside established firms, we help teams bring disciplined product and engineering execution to high-consequence software.</p>
+                        </div>
+                        <div class="contact-highlights">
+                            <div class="contact-highlight">
+                                <span>Engagements</span>
+                                <strong>Product builds</strong>
+                            </div>
+                            <div class="contact-highlight">
+                                <span>Focus</span>
+                                <strong>Fintech &amp; infrastructure</strong>
+                            </div>
+                            <div class="contact-highlight">
+                                <span>Contact</span>
+                                <strong>contact@sonderdev.ca</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <footer class="footer section-panel">
+            <a href="#"><img src="Sonder-DevelopCLR.png" alt="Sonder Development logo"></a>
             <p>&copy; 2026 Sonder Development</p>
-            <a href="mailto:hello@sonderdev.com">hello@sonderdev.com</a>
+            <a href="mailto:contact@sonderdev.ca">contact@sonderdev.ca</a>
         </footer>
     </div>
 
@@ -617,6 +1384,29 @@
 
             revealItems.forEach(function (item) {
                 observer.observe(item);
+            });
+
+            var aboutToggles = document.querySelectorAll("[data-about-toggle]");
+            aboutToggles.forEach(function (toggle) {
+                toggle.addEventListener("click", function () {
+                    var panelId = toggle.getAttribute("aria-controls");
+                    var panel = panelId ? document.getElementById(panelId) : null;
+                    var isExpanded = toggle.getAttribute("aria-expanded") === "true";
+
+                    aboutToggles.forEach(function (otherToggle) {
+                        var otherPanelId = otherToggle.getAttribute("aria-controls");
+                        var otherPanel = otherPanelId ? document.getElementById(otherPanelId) : null;
+                        otherToggle.setAttribute("aria-expanded", "false");
+                        if (otherPanel) {
+                            otherPanel.hidden = true;
+                        }
+                    });
+
+                    if (!isExpanded && panel) {
+                        toggle.setAttribute("aria-expanded", "true");
+                        panel.hidden = false;
+                    }
+                });
             });
 
             var sceneEl = document.getElementById("carousel-scene");
@@ -687,8 +1477,7 @@
 
             var uniforms = {
                 uTime: { value: 0 },
-                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-                uMouse: { value: new THREE.Vector2(0.5, 0.5) }
+                uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) }
             };
 
             var material = new THREE.ShaderMaterial({
@@ -703,7 +1492,6 @@
                     "precision highp float;",
                     "uniform float uTime;",
                     "uniform vec2 uResolution;",
-                    "uniform vec2 uMouse;",
                     "",
                     "float hash(vec2 p) {",
                     "  p = fract(p * vec2(123.34, 456.21));",
@@ -735,49 +1523,46 @@
                     "",
                     "void main() {",
                     "  vec2 uv = gl_FragCoord.xy / uResolution.xy;",
-                    "  vec2 p = uv;",
-                    "  p.x *= uResolution.x / uResolution.y;",
+                    "  vec2 aspect = vec2(uResolution.x / uResolution.y, 1.0);",
+                    "  vec2 p = (uv - 0.5) * aspect + 0.5;",
                     "",
-                    "  float t = uTime * 0.22;",
-                    "  float warpA = fbm(vec2(p.x * 1.05 + t * 0.12, p.y * 1.35 - t * 0.05));",
-                    "  float warpB = fbm(vec2(p.x * 1.30 - t * 0.08, p.y * 1.10 + t * 0.10));",
+                    "  float t = uTime * 0.14;",
                     "",
-                    "  float pathA = 0.56 + sin((p.x * 1.20) + t * 0.80) * 0.10 + (warpA - 0.5) * 0.10;",
-                    "  float pathB = 0.44 + sin((p.x * 1.05) - t * 0.70 + 1.8) * 0.09 + (warpB - 0.5) * 0.08;",
+                    "  float flow1 = fbm(vec2(p.x * 1.35 + t * 0.08, p.y * 1.25 - t * 0.05));",
+                    "  float flow2 = fbm(vec2(p.x * 1.15 - t * 0.06, p.y * 1.45 + t * 0.04));",
+                    "  float flowMix = (flow1 - 0.5) * 0.10 + (flow2 - 0.5) * 0.08;",
+                    "",
+                    "  float pathA = 0.56 + flowMix + sin((p.x * 1.25 + flow2 * 0.7) + t * 0.45) * 0.05;",
+                    "  float pathB = 0.44 - flowMix + sin((p.x * 1.15 + flow1 * 0.8) - t * 0.40 + 1.3) * 0.045;",
+                    "",
                     "  float dA = abs(uv.y - pathA);",
                     "  float dB = abs(uv.y - pathB);",
-                    "  float beamA = smoothstep(0.16, 0.0, dA);",
-                    "  float beamB = smoothstep(0.15, 0.0, dB);",
-                    "",
-                    "  float coreA = smoothstep(0.035, 0.0, dA);",
-                    "  float coreB = smoothstep(0.032, 0.0, dB);",
-                    "  float glowA = smoothstep(0.30, 0.0, dA);",
-                    "  float glowB = smoothstep(0.30, 0.0, dB);",
-                    "",
-                    "  float ribbonFlow = sin((p.x * 10.0) + t * 0.9 + warpA * 6.0) * 0.5 + 0.5;",
+                    "  float beamA = smoothstep(0.18, 0.0, dA);",
+                    "  float beamB = smoothstep(0.16, 0.0, dB);",
+                    "  float coreA = smoothstep(0.038, 0.0, dA);",
+                    "  float coreB = smoothstep(0.035, 0.0, dB);",
+                    "  float glowA = smoothstep(0.28, 0.0, dA);",
+                    "  float glowB = smoothstep(0.28, 0.0, dB);",
                     "",
                     "  vec3 bg = vec3(0.027, 0.020, 0.060);",
-                    "  vec3 colA = vec3(0.250, 0.145, 0.475);",
-                    "  vec3 colB = vec3(0.470, 0.290, 0.760);",
-                    "  vec3 colC = vec3(0.760, 0.560, 0.970);",
+                    "  vec3 colA = vec3(0.245, 0.140, 0.460);",
+                    "  vec3 colB = vec3(0.460, 0.285, 0.740);",
+                    "  vec3 colC = vec3(0.740, 0.550, 0.960);",
                     "",
-                    "  float topoField = fbm(vec2(p.x * 2.25 + t * 0.07, p.y * 2.10 - t * 0.05)) +",
-                    "                    fbm(vec2(p.x * 1.70 - t * 0.04, p.y * 1.85 + t * 0.06)) * 0.35;",
-                    "  float contourWave = abs(sin((topoField + p.x * 0.04 + p.y * 0.08) * 145.0));",
-                    "  float contour = smoothstep(0.955, 0.995, contourWave);",
+                    "  float topoField = fbm(vec2(p.x * 2.2 + t * 0.03, p.y * 2.1 - t * 0.02));",
+                    "  float topoField2 = fbm(vec2(p.x * 1.8 - t * 0.02, p.y * 1.9 + t * 0.025));",
+                    "  float contourSignal = abs(sin((topoField * 1.2 + topoField2 * 0.8) * 130.0));",
+                    "  float contour = smoothstep(0.975, 0.996, contourSignal);",
                     "",
-                    "  float mouseInfluence = 1.0 - smoothstep(0.0, 0.9, distance(uv, uMouse));",
-                    "",
-                    "  vec3 beamColorA = mix(colA, colC, coreA) * (0.78 + ribbonFlow * 0.22);",
+                    "  vec3 beamColorA = mix(colA, colC, coreA);",
                     "  vec3 beamColorB = mix(colA, colB, coreB);",
                     "  vec3 color = bg;",
-                    "  color += beamColorA * beamA * 0.52;",
-                    "  color += beamColorB * beamB * 0.45;",
-                    "  color += colC * (glowA * 0.12 + glowB * 0.10);",
-                    "  color += vec3(0.42, 0.26, 0.72) * contour * 0.20;",
-                    "  color += mouseInfluence * 0.02;",
+                    "  color += beamColorA * beamA * 0.50;",
+                    "  color += beamColorB * beamB * 0.44;",
+                    "  color += colC * (glowA * 0.11 + glowB * 0.10);",
+                    "  color += vec3(0.42, 0.26, 0.72) * contour * 0.16;",
                     "",
-                    "  float vignette = smoothstep(1.08, 0.28, distance(uv, vec2(0.5)));",
+                    "  float vignette = smoothstep(1.06, 0.26, distance(uv, vec2(0.5)));",
                     "  color *= vignette;",
                     "",
                     "  gl_FragColor = vec4(color, 0.97);",
@@ -788,94 +1573,10 @@
             var quad = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
             scene.add(quad);
 
-            window.addEventListener("mousemove", function (event) {
-                uniforms.uMouse.value.x = event.clientX / window.innerWidth;
-                uniforms.uMouse.value.y = 1.0 - event.clientY / window.innerHeight;
-            });
-
             window.addEventListener("resize", function () {
                 renderer.setSize(window.innerWidth, window.innerHeight);
                 uniforms.uResolution.value.set(window.innerWidth, window.innerHeight);
                 layoutCarousel();
-            });
-
-            // Remove dark background and tightly crop logo bounds.
-            function cleanupLogoBackground(img) {
-                if (img.dataset.cleaned === "true") {
-                    return;
-                }
-                var source = img.getAttribute("src");
-                var offscreen = new Image();
-                offscreen.onload = function () {
-                    var c = document.createElement("canvas");
-                    c.width = offscreen.naturalWidth;
-                    c.height = offscreen.naturalHeight;
-                    var ctx = c.getContext("2d");
-                    ctx.drawImage(offscreen, 0, 0);
-                    var data = ctx.getImageData(0, 0, c.width, c.height);
-                    var px = data.data;
-                    var minX = c.width;
-                    var minY = c.height;
-                    var maxX = -1;
-                    var maxY = -1;
-
-                    function isBackground(r, g, b) {
-                        var maxC = Math.max(r, g, b);
-                        var minC = Math.min(r, g, b);
-                        var sat = maxC === 0 ? 0 : (maxC - minC) / maxC;
-                        var val = maxC / 255;
-                        return (val < 0.20) || (sat < 0.16 && val < 0.36);
-                    }
-
-                    for (var i = 0; i < px.length; i += 4) {
-                        var r = px[i];
-                        var g = px[i + 1];
-                        var b = px[i + 2];
-                        var pixelIndex = i / 4;
-                        var x = pixelIndex % c.width;
-                        var y = (pixelIndex - x) / c.width;
-                        if (isBackground(r, g, b)) {
-                            px[i + 3] = 0;
-                        } else if (px[i + 3] > 12) {
-                            if (x < minX) { minX = x; }
-                            if (y < minY) { minY = y; }
-                            if (x > maxX) { maxX = x; }
-                            if (y > maxY) { maxY = y; }
-                        }
-                    }
-                    ctx.putImageData(data, 0, 0);
-
-                    if (maxX > minX && maxY > minY) {
-                        var pad = 4;
-                        var cropW = (maxX - minX + 1);
-                        var cropH = (maxY - minY + 1);
-                        var out = document.createElement("canvas");
-                        out.width = cropW + pad * 2;
-                        out.height = cropH + pad * 2;
-                        var outCtx = out.getContext("2d");
-                        outCtx.drawImage(
-                            c,
-                            minX,
-                            minY,
-                            cropW,
-                            cropH,
-                            pad,
-                            pad,
-                            cropW,
-                            cropH
-                        );
-                        img.src = out.toDataURL("image/png");
-                    } else {
-                        img.src = c.toDataURL("image/png");
-                    }
-                    img.dataset.cleaned = "true";
-                };
-                offscreen.src = source;
-            }
-
-            var logoMarks = document.querySelectorAll(".logo-mark");
-            logoMarks.forEach(function (logo) {
-                cleanupLogoBackground(logo);
             });
 
             var clock = new THREE.Clock();
